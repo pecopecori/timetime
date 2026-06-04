@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time!Time! — 機能紹介</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream:   #FAF4EE;
+      --mint:    #A8C9C4;
+      --pink:    #E8B5B0;
+      --text:    #3D3530;
+      --text-sm: #9B8880;
+      --white:   #ffffff;
+      --mint-lt: rgba(168,201,196,0.18);
+      --pink-lt: rgba(232,181,176,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── BLOBS (background decoration) ── */
+    .blob-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .blob {
+      position: absolute;
+      opacity: 0.55;
+    }
+
+    .blob-tl {
+      top: -80px; left: -80px;
+      width: 320px; height: 300px;
+      background: var(--mint);
+      border-radius: 42% 58% 62% 38% / 48% 44% 56% 52%;
+    }
+
+    .blob-tr {
+      top: -60px; right: -90px;
+      width: 350px; height: 320px;
+      background: var(--pink);
+      border-radius: 60% 40% 38% 62% / 56% 62% 38% 44%;
+    }
+
+    .blob-bl {
+      bottom: -70px; left: -60px;
+      width: 280px; height: 260px;
+      background: var(--pink);
+      border-radius: 52% 48% 38% 62% / 42% 58% 42% 58%;
+    }
+
+    .blob-br {
+      bottom: -80px; right: -70px;
+      width: 340px; height: 300px;
+      background: var(--mint);
+      border-radius: 38% 62% 56% 44% / 62% 38% 62% 38%;
+    }
+
+    /* Dots overlay on blobs */
+    .blob::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.45) 1.5px, transparent 1.5px);
+      background-size: 14px 14px;
+    }
+
+    /* Mid-page floating blobs */
+    .blob-mid-l {
+      top: 50%; left: -100px;
+      width: 220px; height: 200px;
+      background: var(--mint);
+      border-radius: 62% 38% 48% 52% / 44% 56% 44% 56%;
+      opacity: 0.25;
+    }
+
+    .blob-mid-r {
+      top: 60%; right: -90px;
+      width: 240px; height: 220px;
+      background: var(--pink);
+      border-radius: 48% 52% 62% 38% / 56% 44% 56% 44%;
+      opacity: 0.25;
+    }
+
+    /* ── Layout ── */
+    .page { position: relative; z-index: 1; }
+
+    section { padding: 80px 24px; max-width: 960px; margin: 0 auto; }
+
+    .section-label {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--mint), var(--pink));
+      color: white;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      font-family: 'M PLUS 1', sans-serif;
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 900;
+      line-height: 1.3;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    h2 .grad {
+      background: linear-gradient(135deg, #A8C9C4 0%, #D99AAD 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .lead {
+      font-size: 16px;
+      color: var(--text-sm);
+      line-height: 1.8;
+      max-width: 560px;
+      margin-bottom: 48px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding-top: 120px;
+      padding-bottom: 80px;
+      display: flex;
+      align-items: center;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+
+    .hero-copy { flex: 1; min-width: 280px; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--white);
+      border: 1.5px solid rgba(168,201,196,0.5);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-sm);
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(168,201,196,0.2);
+    }
+
+    .hero-badge span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--mint), var(--pink));
+    }
+
+    .hero-title {
+      font-family: 'M PLUS 1', sans-serif;
+      font-size: clamp(38px, 6vw, 60px);
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      margin-bottom: 18px;
+    }
+
+    .hero-title .accent {
+      background: linear-gradient(135deg, #A8C9C4 0%, #D99AAD 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-tagline {
+      font-size: 16px;
+      color: var(--text-sm);
+      line-height: 1.9;
+      margin-bottom: 36px;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--mint), #8FBFBA);
+      color: white;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 15px;
+      font-weight: 900;
+      padding: 14px 28px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(168,201,196,0.45);
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(168,201,196,0.5);
+    }
+
+    /* ── POPUP MOCKUP ── */
+    .hero-mockup {
+      flex-shrink: 0;
+      width: 280px;
+    }
+
+    .mockup-wrap {
+      background: var(--white);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow:
+        0 4px 24px rgba(61,53,48,0.08),
+        0 1px 3px rgba(61,53,48,0.04);
+      border: 1.5px solid rgba(168,201,196,0.3);
+      transform: rotate(-2deg);
+      transition: transform 0.3s;
+    }
+
+    .mockup-wrap:hover { transform: rotate(0deg) scale(1.02); }
+
+    .mockup-top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, var(--mint), var(--pink));
+    }
+
+    .mockup-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px 8px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .mockup-logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+    }
+
+    .mockup-logo svg {
+      width: 16px; height: 16px;
+      stroke: var(--mint);
+    }
+
+    .mockup-settings-icon {
+      width: 16px; height: 16px;
+      stroke: var(--text-sm);
+    }
+
+    .mockup-timer-card {
+      margin: 0 12px 10px;
+      background: rgba(168,201,196,0.1);
+      border: 1.5px solid rgba(168,201,196,0.25);
+      border-radius: 14px;
+      padding: 14px 16px 12px;
+    }
+
+    .mockup-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-sm);
+      background: rgba(168,201,196,0.2);
+      padding: 2px 9px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .mockup-status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--mint);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity:1; }
+      50% { opacity:0.35; }
+    }
+
+    .mockup-time {
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 5px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mockup-client-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--mint);
+    }
+
+    .mockup-month {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 11px;
+      background: rgba(168,201,196,0.12);
+      border-radius: 8px;
+      padding: 5px 10px;
+    }
+
+    .mockup-month span:first-child { color: var(--text-sm); font-weight: 500; }
+    .mockup-month span:last-child  { font-weight: 900; }
+
+    .mockup-clients {
+      margin: 0 12px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .mockup-client-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: var(--white);
+      border: 1.5px solid rgba(168,201,196,0.25);
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .mockup-client-row.active-row {
+      border-color: var(--mint);
+      background: rgba(168,201,196,0.08);
+    }
+
+    .dot-sm {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .mockup-client-row .time-chip {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--mint);
+      background: rgba(168,201,196,0.15);
+      padding: 1px 7px;
+      border-radius: 10px;
+    }
+
+    .mockup-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      padding: 0 12px 14px;
+    }
+
+    .mockup-btn {
+      padding: 9px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: default;
+    }
+
+    .mockup-btn-start {
+      background: var(--mint);
+      color: white;
+    }
+
+    .mockup-btn-break {
+      background: white;
+      color: #C8946A;
+      border: 1.5px solid rgba(200,148,106,0.3);
+    }
+
+    .mockup-btn-stop {
+      background: white;
+      color: #CB5457;
+      border: 1.5px solid rgba(203,84,87,0.3);
+    }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 40px;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 28px 24px;
+      border: 1.5px solid rgba(168,201,196,0.2);
+      box-shadow: 0 4px 20px rgba(61,53,48,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(61,53,48,0.09);
+    }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .icon-mint { background: rgba(168,201,196,0.2); }
+    .icon-pink { background: rgba(232,181,176,0.25); }
+
+    .feature-title {
+      font-family: 'M PLUS 1', sans-serif;
+      font-size: 16px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-sm);
+      line-height: 1.8;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .steps-row {
+      display: flex;
+      gap: 0;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .steps-row::before {
+      content: '';
+      position: absolute;
+      top: 32px;
+      left: 32px;
+      right: 32px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--mint), var(--pink));
+      opacity: 0.3;
+    }
+
+    .step {
+      flex: 1;
+      min-width: 160px;
+      text-align: center;
+      padding: 0 16px;
+      position: relative;
+    }
+
+    .step-num {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 900;
+      margin: 0 auto 14px;
+      position: relative;
+      z-index: 1;
+      border: 3px solid transparent;
+    }
+
+    .step:nth-child(odd)  .step-num { background: rgba(168,201,196,0.2); color: #6EAAA4; border-color: rgba(168,201,196,0.4); }
+    .step:nth-child(even) .step-num { background: rgba(232,181,176,0.2); color: #C88076; border-color: rgba(232,181,176,0.4); }
+
+    .step-title {
+      font-family: 'M PLUS 1', sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .step-desc {
+      font-size: 12px;
+      color: var(--text-sm);
+      line-height: 1.7;
+    }
+
+    /* ── THEMES ── */
+    .themes-intro {
+      display: flex;
+      align-items: flex-end;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+
+    .themes-count {
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--mint), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -3px;
+    }
+
+    .themes-count-label {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-sm);
+      padding-bottom: 10px;
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+    }
+
+    .theme-chip {
+      border-radius: 14px;
+      padding: 12px 10px;
+      text-align: center;
+      cursor: default;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 1.5px solid rgba(255,255,255,0.6);
+    }
+
+    .theme-chip:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 6px 18px rgba(61,53,48,0.12);
+    }
+
+    .theme-swatch {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      margin: 0 auto 7px;
+      border: 2.5px solid rgba(255,255,255,0.7);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .theme-chip-name {
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    /* ── Scroll animation ── */
+    [data-anim] { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    [data-anim].visible { opacity: 1; transform: none; }
+    [data-delay="1"] { transition-delay: 0.08s; }
+    [data-delay="2"] { transition-delay: 0.16s; }
+    [data-delay="3"] { transition-delay: 0.24s; }
+    [data-delay="4"] { transition-delay: 0.32s; }
+
+    /* ── SETUP TIMELINE ── */
+    .tl-wrap { position: relative; padding-left: 0; margin-top: 40px; }
+    .tl-wrap::before {
+      content: '';
+      position: absolute;
+      left: 40px; top: 56px; bottom: 40px;
+      width: 3px;
+      background: repeating-linear-gradient(to bottom, rgba(168,201,196,0.4) 0 8px, transparent 8px 14px);
+      border-radius: 2px;
+    }
+
+    .tl-block { display: flex; gap: 24px; margin-bottom: 48px; }
+    .tl-block:last-child { margin-bottom: 0; }
+
+    .tl-num {
+      flex-shrink: 0; width: 80px; height: 80px;
+      border-radius: 50%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-weight: 900; z-index: 1;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .tl-num .step-label { font-size: 9px; letter-spacing: 0.18em; opacity: 0.75; margin-bottom: 1px; }
+    .tl-num .step-n { font-size: 28px; line-height: 1; }
+    .tl-step1 .tl-num { background: linear-gradient(135deg, var(--mint), #8FBFBA); color: #fff; }
+    .tl-step2 .tl-num { background: linear-gradient(135deg, var(--pink), #D99AAD); color: #fff; }
+
+    .tl-content { flex: 1; padding-top: 10px; }
+    .tl-heading { font-family: 'M PLUS 1', sans-serif; font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+    .tl-sub { font-size: 13px; color: var(--text-sm); margin-bottom: 24px; line-height: 1.8; }
+
+    .substeps { display: flex; flex-direction: column; gap: 16px; }
+    .substep {
+      background: var(--white);
+      border: 1.5px solid rgba(168,201,196,0.25);
+      border-radius: 16px; overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .substep:hover { box-shadow: 0 6px 20px rgba(168,201,196,0.18); }
+    .tl-step2 .substep { border-color: rgba(232,181,176,0.3); }
+    .tl-step2 .substep:hover { box-shadow: 0 6px 20px rgba(232,181,176,0.18); }
+
+    .substep-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1.5px solid rgba(168,201,196,0.15);
+    }
+    .tl-step2 .substep-header { border-bottom-color: rgba(232,181,176,0.2); }
+
+    .substep-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(168,201,196,0.15); border: 1.5px solid rgba(168,201,196,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900; color: #6EAAA4; flex-shrink: 0;
+    }
+    .tl-step2 .substep-num {
+      background: rgba(232,181,176,0.15); border-color: rgba(232,181,176,0.5);
+      color: #C88076;
+    }
+    .substep-title { font-family: 'M PLUS 1', sans-serif; font-size: 14px; font-weight: 900; }
+    .substep-desc { font-size: 12px; color: var(--text-sm); margin-top: 2px; }
+    .substep-body { padding: 18px; }
+
+    .op-text {
+      font-size: 13px; line-height: 2;
+      background: rgba(168,201,196,0.08);
+      border-left: 3px solid var(--mint);
+      padding: 10px 14px; border-radius: 0 8px 8px 0;
+      margin-bottom: 14px;
+    }
+    .tl-step2 .op-text { border-left-color: var(--pink); background: rgba(232,181,176,0.08); }
+    .op-text code {
+      background: rgba(168,201,196,0.2); padding: 2px 7px;
+      border-radius: 5px; font-size: 12px; font-weight: 700; color: #6EAAA4;
+    }
+    .tl-step2 .op-text code { background: rgba(232,181,176,0.2); color: #C88076; }
+
+    /* ZIPダウンロードボタン */
+    .zip-dl-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      margin: 18px 0 8px;
+      padding: 16px 22px;
+      background: linear-gradient(135deg, var(--mint), #8FBFBA);
+      color: #fff; text-decoration: none;
+      border-radius: 14px;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      font-weight: 900; font-size: 15px;
+      letter-spacing: 0.04em;
+      box-shadow: 0 6px 20px rgba(143,191,186,0.4);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .zip-dl-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(143,191,186,0.5);
+    }
+    .zip-dl-icon { font-size: 18px; line-height: 1; }
+    .zip-dl-text { flex: 1; }
+    .zip-dl-size {
+      font-size: 11px; font-weight: 700;
+      background: rgba(255,255,255,0.25);
+      padding: 4px 9px; border-radius: 999px;
+      letter-spacing: 0.05em;
+    }
+
+    /* コピーボタン */
+    .copy-url-btn {
+      display: inline-flex; align-items: center; justify-content: space-between;
+      width: 100%; margin-top: 8px;
+      background: rgba(168,201,196,0.1); border: 1.5px solid rgba(168,201,196,0.35);
+      border-radius: 10px; padding: 11px 16px;
+      cursor: pointer; font-family: 'M PLUS Rounded 1c', sans-serif;
+      transition: background 0.15s; gap: 10px;
+    }
+    .copy-url-btn:hover { background: rgba(168,201,196,0.2); }
+    .copy-url-btn.copied { background: rgba(232,181,176,0.15); border-color: var(--pink); }
+    .copy-url-text { font-size: 13px; font-weight: 900; color: #6EAAA4; letter-spacing: 0.03em; }
+    .copy-url-btn.copied .copy-url-text { color: #C88076; }
+    .copy-url-icon { font-size: 12px; font-weight: 700; color: var(--text-sm); white-space: nowrap; flex-shrink: 0; }
+    .copy-url-btn.copied .copy-url-icon { color: #C88076; }
+
+    /* スクショ・動画 */
+    .screenshot-wrap { margin-top: 10px; }
+    .screenshot-wrap + .screenshot-wrap { margin-top: 10px; }
+    .screenshot-placeholder {
+      width: 100%; aspect-ratio: 16/9;
+      background: linear-gradient(135deg, rgba(168,201,196,0.12), rgba(232,181,176,0.08));
+      border: 2px dashed rgba(168,201,196,0.4);
+      border-radius: 12px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px; color: var(--text-sm);
+      font-size: 13px; font-weight: 700;
+    }
+    .screenshot-placeholder .ph-icon { font-size: 26px; opacity: 0.5; }
+    .screenshot-img {
+      width: 100%; border-radius: 12px;
+      border: 1.5px solid rgba(168,201,196,0.3);
+      box-shadow: 0 4px 16px rgba(61,53,48,0.07);
+      display: block;
+    }
+    .video-wrap { margin-top: 10px; }
+    .video-wrap + .video-wrap { margin-top: 12px; }
+    .video-label { font-size: 11px; font-weight: 900; color: var(--text-sm); margin-bottom: 5px; letter-spacing: 0.06em; }
+    .demo-video {
+      width: 100%; border-radius: 12px;
+      border: 1.5px solid rgba(168,201,196,0.3);
+      box-shadow: 0 4px 16px rgba(61,53,48,0.07);
+      display: block;
+    }
+
+    .point-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(232,181,176,0.15); border: 1.5px solid rgba(232,181,176,0.4);
+      color: #C88076; border-radius: 8px;
+      padding: 6px 12px; font-size: 12px; font-weight: 700;
+      margin-top: 10px;
+    }
+
+    .setup-badge {
+      display: inline-block;
+      background: rgba(232,181,176,0.2);
+      color: #C88076;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+      vertical-align: middle;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── SHEETS INFO ── */
+    .sheets-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1.5px solid rgba(232,181,176,0.3);
+      box-shadow: 0 4px 20px rgba(61,53,48,0.06);
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .sheets-visual {
+      flex-shrink: 0;
+      background: var(--cream);
+      border-radius: 14px;
+      padding: 14px;
+      border: 1.5px solid rgba(168,201,196,0.25);
+    }
+
+    .sheets-table {
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .sheets-table th {
+      background: rgba(168,201,196,0.25);
+      padding: 5px 10px;
+      font-weight: 700;
+      text-align: center;
+      border: 1px solid rgba(168,201,196,0.3);
+      color: var(--text);
+    }
+
+    .sheets-table td {
+      padding: 5px 10px;
+      border: 1px solid rgba(61,53,48,0.07);
+      text-align: center;
+      color: var(--text-sm);
+    }
+
+    .sheets-table tr:nth-child(even) td { background: rgba(168,201,196,0.06); }
+
+    .td-mint { background: rgba(168,201,196,0.2) !important; font-weight: 700; color: var(--text) !important; }
+    .td-pink { background: rgba(232,181,176,0.2) !important; font-weight: 700; color: var(--text) !important; }
+
+    .sheets-info { flex: 1; min-width: 220px; }
+
+    .sheets-info h3 {
+      font-family: 'M PLUS 1', sans-serif;
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .sheets-info p {
+      font-size: 13px;
+      color: var(--text-sm);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .sheets-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .sheets-bullets li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .sheets-bullets li::before {
+      content: '';
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--mint), var(--pink));
+      flex-shrink: 0;
+    }
+
+    /* ── DIVIDER ── */
+    .wavy-divider {
+      width: 100%;
+      height: 60px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 48px 24px 60px;
+      font-size: 13px;
+      color: var(--text-sm);
+    }
+
+    footer strong {
+      color: var(--text);
+      font-weight: 900;
+    }
+
+    .footer-hearts {
+      font-size: 18px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .hero { flex-direction: column; gap: 40px; }
+      .hero-mockup { width: 100%; max-width: 280px; margin: 0 auto; }
+      .steps-row::before { display: none; }
+    }
+
+    /* ══════════════════════════════════════════
+       機能ガイド NAV
+    ══════════════════════════════════════════ */
+    .guide-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,240,235,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1.5px solid rgba(168,201,196,0.25);
+      padding: 0 24px;
+      margin: 0 -24px;
+    }
+    .guide-nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; gap: 0;
+      height: 52px; overflow-x: auto;
+    }
+    .guide-nav-logo {
+      font-family: 'M PLUS 1', sans-serif;
+      font-size: 15px; font-weight: 900; color: var(--text);
+      white-space: nowrap; margin-right: 20px; flex-shrink: 0;
+    }
+    .guide-nav-logo em { color: var(--mint-dk); font-style: normal; }
+    .guide-nav-links { display: flex; gap: 2px; }
+    .guide-nav-links a {
+      font-size: 12px; font-weight: 700; color: var(--text-sm);
+      text-decoration: none; padding: 6px 9px; border-radius: 8px;
+      white-space: nowrap; transition: background 0.15s, color 0.15s;
+    }
+    .guide-nav-links a:hover { background: rgba(168,201,196,0.18); color: var(--mint-dk); }
+
+    /* ── Guide hero ── */
+    .guide-hero {
+      padding: 64px 0 48px; text-align: center;
+      border-top: 1.5px solid rgba(168,201,196,0.2);
+      margin-top: 0;
+    }
+    .guide-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: white; border: 1.5px solid rgba(168,201,196,0.45);
+      border-radius: 999px; padding: 5px 16px;
+      font-size: 12px; font-weight: 700; color: var(--text-sm);
+      margin-bottom: 20px;
+    }
+    .guide-hero h2 {
+      font-family: 'M PLUS 1', sans-serif;
+      font-size: clamp(28px, 5vw, 48px); font-weight: 900;
+      letter-spacing: -1px; margin-bottom: 12px; line-height: 1.15;
+    }
+    .guide-hero h2 span { color: var(--mint-dk); }
+    .guide-hero-lead { font-size: 14px; color: var(--text-sm); line-height: 1.9; margin-bottom: 36px; }
+    .toc-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px; max-width: 760px; margin: 0 auto;
+    }
+    .toc-chip {
+      background: white; border: 1.5px solid rgba(168,201,196,0.3);
+      border-radius: 12px; padding: 12px 14px;
+      font-size: 12px; font-weight: 700; color: var(--text);
+      text-decoration: none; transition: all 0.18s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .toc-chip:hover { background: var(--mint); color: white; border-color: var(--mint); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(168,201,196,0.35); }
+    .toc-chip span { font-size: 16px; }
+
+    /* ── Feature sections ── */
+    .feat-section {
+      padding: 72px 0 48px;
+      border-top: 1.5px solid rgba(168,201,196,0.2);
+    }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, var(--mint), var(--pink));
+      color: white; font-size: 10px; font-weight: 900;
+      letter-spacing: 1.5px; padding: 4px 12px; border-radius: 999px; margin-bottom: 12px;
+    }
+    .feat-section h2 {
+      font-family: 'M PLUS 1', sans-serif !important;
+      font-size: clamp(22px, 3.5vw, 30px); font-weight: 900;
+      letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.25;
+    }
+    .feat-section h2 em { font-style: normal; color: var(--mint-dk); }
+    .feat-section .section-lead {
+      font-size: 14px; color: var(--text-sm); line-height: 1.9;
+      max-width: 540px; margin-bottom: 36px;
+    }
+    .feat-body { display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap; }
+    .feat-body.reverse { flex-direction: row-reverse; }
+    .feat-explain { flex: 1; min-width: 260px; text-align: left; }
+    .feat-mockup-wrap { flex-shrink: 0; width: 280px; }
+
+    /* ── Step list (guide) ── */
+    .step-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; text-align: left; }
+    .step-item { display: flex; gap: 12px; align-items: flex-start; text-align: left; }
+    .feat-section .step-num {
+      flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(168,201,196,0.18); border: 1.5px solid rgba(168,201,196,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 900; color: var(--mint-dk);
+      margin: 0;
+    }
+    .feat-section .step-num.pink {
+      background: rgba(232,181,176,0.18); border-color: rgba(232,181,176,0.4);
+      color: var(--pink-dk);
+    }
+    .step-text { font-size: 13px; line-height: 1.8; padding-top: 3px; }
+    .step-text strong { color: var(--text); }
+    .step-text code {
+      background: rgba(168,201,196,0.18); padding: 1px 6px;
+      border-radius: 5px; font-size: 11px; font-weight: 700; color: var(--mint-dk);
+    }
+    .tip {
+      display: inline-flex; align-items: flex-start; gap: 8px;
+      background: rgba(232,181,176,0.15); border: 1.5px solid rgba(232,181,176,0.35);
+      border-radius: 10px; padding: 10px 14px;
+      font-size: 12px; line-height: 1.7; color: var(--text-sm); margin-top: 12px;
+    }
+    .tip-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Popup mockup ── */
+    .popup {
+      background: var(--white); border-radius: 20px; overflow: hidden;
+      box-shadow: 0 6px 28px rgba(61,53,48,0.1), 0 1px 4px rgba(61,53,48,0.06);
+      border: 1.5px solid rgba(168,201,196,0.25); font-size: 12px;
+    }
+    .popup-bar { height: 4px; background: linear-gradient(90deg, var(--mint), var(--pink)); }
+    .popup-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px 8px; }
+    .popup-logo { display: flex; align-items: center; gap: 5px; font-weight: 900; font-size: 13px; color: var(--text); }
+    .popup-logo-icon { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--mint); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .popup-icons { display: flex; gap: 4px; }
+    .popup-icon-btn { width: 22px; height: 22px; border-radius: 7px; background: rgba(168,201,196,0.12); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-sm); }
+    .popup-timer-card { margin: 0 10px 8px; background: rgba(168,201,196,0.1); border: 1.5px solid rgba(168,201,196,0.22); border-radius: 14px; padding: 10px 12px; }
+    .popup-status { display: inline-flex; align-items: center; gap: 4px; background: rgba(168,201,196,0.2); padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 700; color: var(--mint-dk); margin-bottom: 6px; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); }
+    .status-dot.idle { background: #ccc; }
+    .status-dot.break { background: var(--pink); }
+    .popup-time { font-size: 32px; font-weight: 900; color: var(--text); letter-spacing: -1px; line-height: 1; margin-bottom: 4px; }
+    .popup-client-name { font-size: 11px; color: var(--text-sm); margin-bottom: 6px; }
+    .popup-month-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+    .popup-month-label { color: var(--text-sm); }
+    .popup-month-val { font-weight: 700; color: var(--text); }
+    .popup-section-label { padding: 6px 14px 4px; font-size: 9px; font-weight: 900; color: var(--text-sm); letter-spacing: 1.2px; text-transform: uppercase; }
+    .popup-client-list { padding: 0 10px 8px; display: flex; flex-direction: column; gap: 5px; }
+    .popup-client-row { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border: 1.5px solid rgba(168,201,196,0.2); border-radius: 11px; padding: 8px 10px; }
+    .popup-client-row.active { background: rgba(168,201,196,0.12); border-color: rgba(168,201,196,0.4); }
+    .popup-client-left { display: flex; align-items: center; gap: 7px; }
+    .client-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .popup-client-n { font-size: 12px; font-weight: 700; color: var(--text); }
+    .popup-client-t { font-size: 11px; color: var(--mint-dk); font-weight: 700; }
+    .popup-actions { display: flex; gap: 6px; padding: 4px 10px 12px; }
+    .popup-btn { flex: 1; height: 34px; border-radius: 11px; border: none; font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 12px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .popup-btn-start { background: var(--mint); color: white; }
+    .popup-btn-break { background: none; border: 1.5px solid rgba(232,181,176,0.5) !important; color: var(--pink-dk); }
+    .popup-btn-stop  { background: none; border: 1.5px solid rgba(232,181,176,0.5) !important; color: var(--pink-dk); }
+    .popup-note-bar { margin: 0 10px 8px; background: rgba(168,201,196,0.1); border: 1.5px solid rgba(168,201,196,0.3); border-radius: 12px; padding: 8px 12px; }
+    .popup-note-label { font-size: 9px; font-weight: 900; color: var(--text-sm); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+    .popup-note-input { width: 100%; border: none; border-bottom: 1px solid rgba(168,201,196,0.3); background: transparent; font-size: 11px; color: var(--text-sm); padding-bottom: 5px; margin-bottom: 6px; font-family: 'M PLUS Rounded 1c', sans-serif; }
+    .popup-note-btns { display: flex; gap: 5px; justify-content: flex-end; }
+    .popup-note-skip { font-size: 10px; font-weight: 700; color: var(--text-sm); background: none; border: 1.5px solid rgba(168,201,196,0.25); border-radius: 7px; padding: 3px 9px; cursor: pointer; font-family: inherit; }
+    .popup-note-confirm { font-size: 10px; font-weight: 700; color: white; background: var(--mint); border: none; border-radius: 7px; padding: 3px 10px; cursor: pointer; font-family: inherit; }
+    .popup-tags { padding: 0 10px 8px; display: flex; flex-wrap: wrap; gap: 5px; }
+    .popup-tag { background: rgba(168,201,196,0.15); border: 1.5px solid rgba(168,201,196,0.3); border-radius: 8px; padding: 3px 9px; font-size: 10px; font-weight: 700; color: var(--mint-dk); }
+    .popup-tag.active { background: var(--mint); color: white; border-color: var(--mint); }
+    .popup-tag.pink-tag { background: rgba(232,181,176,0.15); border-color: rgba(232,181,176,0.3); color: var(--pink-dk); }
+    .popup-tag.pink-tag.active { background: var(--pink); color: white; border-color: var(--pink); }
+    .popup-pomo-bar { display: flex; align-items: center; gap: 8px; padding: 5px 14px; background: rgba(168,201,196,0.1); border-bottom: 1px solid rgba(168,201,196,0.15); font-size: 10px; }
+    .pomo-phase-label { font-weight: 900; color: var(--mint-dk); }
+    .pomo-track { flex: 1; height: 5px; background: rgba(168,201,196,0.2); border-radius: 3px; overflow: hidden; }
+    .pomo-fill { height: 100%; background: var(--mint); border-radius: 3px; }
+    .pomo-countdown { font-weight: 700; color: var(--text-sm); }
+    .popup-goal { margin: 0 10px 6px; background: rgba(168,201,196,0.08); border-radius: 10px; padding: 7px 10px; }
+    .goal-row { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 4px; }
+    .goal-label { color: var(--text-sm); }
+    .goal-pct { font-weight: 900; color: var(--mint-dk); }
+    .goal-track { height: 5px; background: rgba(168,201,196,0.2); border-radius: 3px; overflow: hidden; }
+    .goal-fill-bar { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--mint), #8FBFBA); }
+
+    /* ── Settings mockup ── */
+    .settings-page { background: var(--cream); border-radius: 14px; overflow: hidden; border: 1.5px solid rgba(168,201,196,0.2); box-shadow: 0 4px 20px rgba(61,53,48,0.08); }
+    .settings-header { background: white; border-bottom: 1.5px solid rgba(168,201,196,0.2); padding: 14px 16px; font-size: 13px; font-weight: 900; color: var(--text); }
+    .settings-card { background: white; margin: 10px; border-radius: 12px; overflow: hidden; border: 1.5px solid rgba(168,201,196,0.2); }
+    .settings-card-title { display: flex; align-items: center; gap: 7px; padding: 10px 14px; font-size: 12px; font-weight: 900; color: var(--text); border-bottom: 1px solid rgba(168,201,196,0.15); }
+    .settings-field { padding: 10px 14px; border-bottom: 1px solid rgba(168,201,196,0.1); }
+    .settings-field:last-child { border-bottom: none; }
+    .settings-field-label { font-size: 10px; font-weight: 700; color: var(--text-sm); margin-bottom: 5px; }
+    .settings-input { width: 100%; background: var(--surface); border: 1.5px solid rgba(168,201,196,0.25); border-radius: 8px; padding: 6px 10px; font-size: 11px; color: var(--text); font-family: inherit; }
+    .settings-toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; }
+    .settings-toggle-label { font-size: 12px; font-weight: 700; color: var(--text); }
+    .toggle-pill { width: 34px; height: 18px; border-radius: 9px; position: relative; }
+    .toggle-pill.on { background: var(--mint); }
+    .toggle-pill.off { background: #ddd; }
+    .toggle-thumb { width: 14px; height: 14px; border-radius: 50%; background: white; position: absolute; top: 2px; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+    .toggle-pill.on .toggle-thumb { left: 18px; }
+    .toggle-pill.off .toggle-thumb { left: 2px; }
+
+    /* ── Theme mockup ── */
+    .theme-palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; padding: 10px; }
+    .theme-chip-sm { border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 9px; font-weight: 700; border: 1.5px solid transparent; }
+    .theme-chip-sm.selected { border-color: var(--text); }
+    .theme-swatch-sm { width: 20px; height: 20px; border-radius: 50%; margin: 0 auto 3px; }
+
+    /* ── Report mockup ── */
+    .report-page { background: white; border-radius: 14px; overflow: hidden; border: 1.5px solid rgba(168,201,196,0.2); box-shadow: 0 4px 20px rgba(61,53,48,0.08); }
+    .report-header { background: linear-gradient(135deg, var(--mint), var(--pink)); padding: 14px 16px; }
+    .report-title { font-size: 14px; font-weight: 900; color: white; }
+    .report-sub { font-size: 11px; color: rgba(255,255,255,0.8); }
+    .report-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; border-bottom: 1px solid rgba(168,201,196,0.12); }
+    .report-row:last-child { border-bottom: none; }
+    .report-client { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700; }
+    .report-hours { font-size: 13px; font-weight: 900; color: var(--mint-dk); }
+
+    /* ── Invoice mockup ── */
+    .invoice-page { background: white; border-radius: 14px; overflow: hidden; border: 1.5px solid rgba(168,201,196,0.2); box-shadow: 0 4px 20px rgba(61,53,48,0.08); padding: 14px; }
+    .invoice-title-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
+    .invoice-ttl { font-size: 16px; font-weight: 900; color: var(--text); }
+    .invoice-date { font-size: 11px; color: var(--text-sm); margin-top: 3px; }
+    .invoice-parties { display: flex; justify-content: space-between; margin-bottom: 12px; }
+    .invoice-party-label { font-size: 9px; font-weight: 700; color: var(--text-sm); margin-bottom: 2px; }
+    .invoice-party-name { font-size: 13px; font-weight: 900; color: var(--text); }
+    .invoice-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+    .invoice-table th { background: rgba(168,201,196,0.15); padding: 5px 8px; text-align: left; font-weight: 900; color: var(--text-sm); }
+    .invoice-table td { padding: 5px 8px; border-bottom: 1px solid rgba(168,201,196,0.12); color: var(--text); }
+    .invoice-total-row { display: flex; justify-content: flex-end; gap: 16px; margin-top: 10px; font-size: 12px; }
+    .invoice-total-label { color: var(--text-sm); font-weight: 700; }
+    .invoice-total-num { font-weight: 900; color: var(--text); }
+
+    /* ── Sheets mockup ── */
+    .sheet-table { background: white; border-radius: 14px; overflow: hidden; border: 1.5px solid rgba(168,201,196,0.2); box-shadow: 0 4px 20px rgba(61,53,48,0.08); font-size: 11px; }
+    .sheet-header-row { display: grid; grid-template-columns: 80px 90px 50px 50px 60px 1fr; background: rgba(168,201,196,0.15); gap: 1px; }
+    .sheet-header-row div, .sheet-data-row div { padding: 6px 8px; font-weight: 700; color: var(--text-sm); font-size: 10px; }
+    .sheet-data-row { display: grid; grid-template-columns: 80px 90px 50px 50px 60px 1fr; border-top: 1px solid rgba(168,201,196,0.15); }
+    .sheet-data-row div { font-weight: 400; color: var(--text); }
+    .sheet-data-row.mint-row { background: rgba(168,201,196,0.06); }
+    .sheet-data-row.pink-row { background: rgba(232,181,176,0.06); }
+
+    @media (max-width: 680px) {
+      .feat-body, .feat-body.reverse { flex-direction: column; }
+      .feat-mockup-wrap { width: 100%; max-width: 320px; margin: 0 auto; }
+      .feat-explain { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Background blobs -->
+<div class="blob-layer" aria-hidden="true">
+  <div class="blob blob-tl"></div>
+  <div class="blob blob-tr"></div>
+  <div class="blob blob-bl"></div>
+  <div class="blob blob-br"></div>
+  <div class="blob blob-mid-l"></div>
+  <div class="blob blob-mid-r"></div>
+</div>
+
+<div class="page">
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="hero-badge">
+        <span></span>
+        Chrome 拡張機能
+      </div>
+      <h1 class="hero-title">
+        Time!Time!
+      </h1>
+      <p class="hero-tagline">
+        クライアントごとにタイマーを切り替えて、<br>
+        月の稼働をそのままスプレッドシートに。<br>
+        54種のカラーテーマで、自分色にカスタマイズ。
+      </p>
+      <a class="hero-cta" href="#setup">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        導入してみる
+      </a>
+    </div>
+
+    <div class="hero-mockup">
+      <div class="mockup-wrap">
+        <div class="mockup-top-bar"></div>
+        <div class="mockup-header">
+          <div class="mockup-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <circle cx="12" cy="12" r="9"/>
+              <polyline points="12 7 12 12 15.5 15.5"/>
+            </svg>
+            Time!Time!
+          </div>
+          <svg class="mockup-settings-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </div>
+
+        <div class="mockup-timer-card">
+          <div class="mockup-status">
+            <span class="mockup-status-dot"></span>
+            稼働中
+          </div>
+          <div class="mockup-time" id="liveTimer">02:34:15</div>
+          <div class="mockup-client-name">ハルカ企画</div>
+          <div class="mockup-month">
+            <span>今月合計</span>
+            <span>47:22</span>
+          </div>
+        </div>
+
+        <div class="mockup-clients">
+          <div class="mockup-client-row active-row">
+            <span class="dot-sm" style="background:#A8C9C4"></span>
+            ハルカ企画
+            <span class="time-chip">2:34</span>
+          </div>
+          <div class="mockup-client-row">
+            <span class="dot-sm" style="background:#E8B5B0"></span>
+            ことり堂
+            <span class="time-chip" style="color:#C88076;background:rgba(232,181,176,0.15)">0:48</span>
+          </div>
+        </div>
+
+        <div class="mockup-buttons">
+          <button class="mockup-btn mockup-btn-start">再開</button>
+          <button class="mockup-btn mockup-btn-break">休憩</button>
+          <button class="mockup-btn mockup-btn-stop">終了</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURES ── -->
+  <section>
+    <div class="section-label">FEATURES</div>
+    <h2>すべての機能が<br><span class="grad">ワンクリックで</span>手元に</h2>
+    <p class="lead">クライアントワークの時間管理に必要な機能を、かわいいUIにギュッとまとめました。</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon icon-mint">⏱</div>
+        <div class="feature-title">リアルタイムタイマー</div>
+        <div class="feature-desc">ポップアップを閉じても計測は継続。バッジに経過時間を表示して、いつでも確認できます。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-pink">👥</div>
+        <div class="feature-title">マルチクライアント対応</div>
+        <div class="feature-desc">複数クライアントを登録して、色で区別。タップひとつで切り替えられます。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-mint">☕</div>
+        <div class="feature-title">休憩モード</div>
+        <div class="feature-desc">「休憩」ボタンを押せば休憩時間だけ自動除外。正確な稼働時間だけを記録します。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-pink">📊</div>
+        <div class="feature-title">Sheetsに自動集計</div>
+        <div class="feature-desc">月ごとのシートに自動書き込み。クライアント別にカラーコーディングされた、見やすいフォーマットで。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-mint">🎨</div>
+        <div class="feature-title">54種のカラーテーマ</div>
+        <div class="feature-desc">「春のクローバー」「砂糖漬けのバラ」「地中海の港」… 詩的な名前のプリセットから選ぶか、自分でカスタマイズ。</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-pink">📥</div>
+        <div class="feature-title">CSV・JSONエクスポート</div>
+        <div class="feature-desc">請求書作成や月次報告にそのまま使えるデータをワンクリックで書き出し。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section>
+    <div class="section-label">HOW TO USE</div>
+    <h2>使い方は<br><span class="grad">4ステップ</span>だけ</h2>
+    <p class="lead">難しい設定は不要。拡張機能を追加したら、すぐに使い始められます。</p>
+
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">拡張機能を追加</div>
+        <div class="step-desc">Chromeにパッケージ化されていない拡張機能として読み込みます</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">クライアントを登録</div>
+        <div class="step-desc">設定画面で名前と色を登録。テーマも好きなものに変更</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">タイマーを開始</div>
+        <div class="step-desc">クライアントを選んで「開始」。終わったら「終了」を押すだけ</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title">Sheetsに同期</div>
+        <div class="step-desc">📊ボタンで月次データをスプレッドシートに自動書き込み</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SHEETS ── -->
+  <section>
+    <div class="section-label">SPREADSHEET</div>
+    <h2><span class="grad">Googleスプレッドシート</span><br>と繋がる</h2>
+    <p class="lead">ワンクリックで月次の稼働データを自動フォーマット。請求書作成がぐっとラクになります。</p>
+
+    <div class="sheets-card">
+      <div class="sheets-visual">
+        <table class="sheets-table">
+          <tr>
+            <th>日付</th><th>クライアント</th><th>開始</th><th>終了</th><th>稼働時間</th>
+          </tr>
+          <tr>
+            <td>2026-05-12</td><td class="td-mint">ハルカ企画</td><td>09:00</td><td>12:30</td><td>3:30</td>
+          </tr>
+          <tr>
+            <td>2026-05-12</td><td class="td-pink">ことり堂</td><td>14:00</td><td>16:00</td><td>2:00</td>
+          </tr>
+          <tr>
+            <td>2026-05-13</td><td class="td-mint">ハルカ企画</td><td>10:00</td><td>13:45</td><td>3:45</td>
+          </tr>
+          <tr>
+            <td>2026-05-13</td><td class="td-pink">ことり堂</td><td>15:00</td><td>17:30</td><td>2:30</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="sheets-info">
+        <h3>自動で整えてくれる</h3>
+        <p>同期ボタンを押すだけで、月ごとのシートが作成されます。ヘッダーの固定、クライアント別カラーコーディングも自動。</p>
+        <ul class="sheets-bullets">
+          <li>月ごとに自動でシートを作成</li>
+          <li>クライアント別にカラーコーディング</li>
+          <li>ヘッダー行を自動でフリーズ</li>
+          <li>カラム幅を自動調整</li>
+          <li>CSVとしても書き出し可能</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── THEMES ── -->
+  <section>
+    <div class="section-label">COLOR THEMES</div>
+    <div class="themes-intro">
+      <div class="themes-count">54</div>
+      <div class="themes-count-label">種類の<br>カラーテーマ</div>
+    </div>
+    <p class="lead">詩的な名前のプリセットから選ぶか、カラーピッカーで自分だけのテーマを作れます。</p>
+
+    <div class="theme-grid" id="themeGrid">
+      <!-- rendered by JS -->
+    </div>
+  </section>
+
+  <!-- ── SETUP ── -->
+  <section id="setup">
+    <div class="section-label">SETUP</div>
+    <h2>導入は<br><span class="grad">3分</span>でできます</h2>
+    <p class="lead">Chrome Web Storeへの公開前でも、開発者モードで今すぐ使えます。</p>
+
+    <div class="tl-wrap">
+
+      <!-- ════════ STEP 1 ZIPを解凍 ════════ -->
+      <div class="tl-block tl-step1" data-anim>
+        <div class="tl-num">
+          <span class="step-label">STEP</span>
+          <span class="step-n">1</span>
+        </div>
+        <div class="tl-content">
+          <div class="tl-heading">ZIP をダウンロードして解凍する</div>
+          <div class="tl-sub">下のボタンから ZIP をダウンロードして、ダブルクリックで解凍するだけです。</div>
+
+          <a class="zip-dl-btn" href="timetime.zip" download>
+            <span class="zip-dl-icon">⬇︎</span>
+            <span class="zip-dl-text">timetime.zip をダウンロード</span>
+            <span class="zip-dl-size">約 80 KB</span>
+          </a>
+
+          <div class="substeps">
+
+            <!-- 1-1 -->
+            <div class="substep" data-anim data-delay="1">
+              <div class="substep-header">
+                <div class="substep-num">1</div>
+                <div>
+                  <div class="substep-title">ZIP ファイルを解凍する</div>
+                  <div class="substep-desc">ダウンロードした ZIP をダブルクリックするだけで OK</div>
+                </div>
+              </div>
+              <div class="substep-body">
+                <div class="op-text">
+                  ダウンロードした <code>timetime.zip</code> を<br>
+                  <strong>ダブルクリック</strong> → <code>timetime</code> フォルダが展開されます
+                </div>
+                <div class="screenshot-wrap">
+                  <video src="assets/step1b-unzip.mov" autoplay muted loop playsinline
+                    style="width:100%;border-radius:10px;display:block;"></video>
+                </div>
+                <div class="point-badge">💡 フォルダの中に <strong>manifest.json</strong> というファイルがあれば OK です</div>
+              </div>
+            </div>
+
+          </div><!-- /substeps -->
+        </div>
+      </div><!-- /tl-step1 -->
+
+      <!-- ════════ STEP 2 Chrome に入れる ════════ -->
+      <div class="tl-block tl-step2" data-anim>
+        <div class="tl-num">
+          <span class="step-label">STEP</span>
+          <span class="step-n">2</span>
+        </div>
+        <div class="tl-content">
+          <div class="tl-heading">Chrome に拡張機能として入れる</div>
+          <div class="tl-sub">Chrome の設定画面でフォルダを読み込みます。</div>
+
+          <div class="substeps">
+
+            <!-- 2-1 -->
+            <div class="substep" data-anim data-delay="1">
+              <div class="substep-header">
+                <div class="substep-num">1</div>
+                <div>
+                  <div class="substep-title">拡張機能ページを開く</div>
+                  <div class="substep-desc">Chrome のアドレスバーにコピーして Enter</div>
+                </div>
+              </div>
+              <div class="substep-body">
+                <div class="op-text">
+                  Chrome のアドレスバーに下の URL をコピーして貼り付け → Enter<br>
+                  （Chrome メニュー → 「拡張機能」→「拡張機能を管理」でも OK）
+                </div>
+                <button class="copy-url-btn" data-copy="chrome://extensions" onclick="copyUrl(this)">
+                  <span class="copy-url-text">chrome://extensions</span>
+                  <span class="copy-url-icon">📋 コピー</span>
+                </button>
+                <div class="screenshot-wrap" style="margin-top:14px;">
+                  <img class="screenshot-img" src="assets/c-extensions-page.png" alt="chrome://extensions を開いた状態">
+                </div>
+              </div>
+            </div>
+
+            <!-- 2-2 -->
+            <div class="substep" data-anim data-delay="2">
+              <div class="substep-header">
+                <div class="substep-num">2</div>
+                <div>
+                  <div class="substep-title">デベロッパーモードを ON にする</div>
+                  <div class="substep-desc">右上のスイッチを ON にする（一度だけの操作）</div>
+                </div>
+              </div>
+              <div class="substep-body">
+                <div class="op-text">
+                  画面右上の <code>デベロッパーモード</code> スイッチをクリックして <strong>ON</strong> にする<br>
+                  → 画面左上にボタンが 3 つ増えます
+                </div>
+                <div class="screenshot-wrap">
+                  <img class="screenshot-img" src="assets/d-devmode-on.png" alt="デベロッパーモードを ON にした状態">
+                </div>
+              </div>
+            </div>
+
+            <!-- 2-3 -->
+            <div class="substep" data-anim data-delay="3">
+              <div class="substep-header">
+                <div class="substep-num">3</div>
+                <div>
+                  <div class="substep-title">フォルダを読み込む</div>
+                  <div class="substep-desc">「パッケージ化されていない拡張機能を読み込む」をクリック</div>
+                </div>
+              </div>
+              <div class="substep-body">
+                <div class="op-text">
+                  左上に現れた <code>パッケージ化されていない拡張機能を読み込む</code> ボタンをクリック<br>
+                  → STEP 1 で解凍した <strong>timetime</strong> フォルダを選択<br>
+                  → <strong>「開く」</strong> をクリック
+                </div>
+                <div class="screenshot-wrap">
+                  <img class="screenshot-img" src="assets/e-folder-select.png" alt="パッケージ化されていない拡張機能を読み込むボタン">
+                </div>
+                <div class="screenshot-wrap" style="margin-top:10px;">
+                  <video src="assets/step2-folder-select.mov" autoplay muted loop playsinline
+                    style="width:100%;border-radius:10px;display:block;"></video>
+                </div>
+                <div class="point-badge">💡 フォルダの中ではなく、フォルダ自体（timetime）を選んでください</div>
+              </div>
+            </div>
+
+            <!-- 2-4 -->
+            <div class="substep" data-anim data-delay="4">
+              <div class="substep-header">
+                <div class="substep-num">4</div>
+                <div>
+                  <div class="substep-title">追加されたことを確認 → ピン留め</div>
+                  <div class="substep-desc">拡張機能一覧に Time!Time! が表示されれば成功！</div>
+                </div>
+              </div>
+              <div class="substep-body">
+                <div class="op-text">
+                  一覧に <strong>🌿 Time!Time!</strong> が表示されていれば完了です<br>
+                  ツールバーのパズル🧩アイコン → Time!Time! 横の 📌 をクリックして固定するとすぐ使えます
+                </div>
+                <div class="screenshot-wrap">
+                  <video src="assets/step2-pin.mov" autoplay muted loop playsinline
+                    style="width:50%;border-radius:10px;display:block;"></video>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /substeps -->
+        </div>
+      </div><!-- /tl-step2 -->
+
+    </div><!-- /tl-wrap -->
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       機能ガイド
+  ══════════════════════════════════════════ -->
+
+  <!-- Guide sticky nav -->
+  <div class="guide-nav">
+    <div class="guide-nav-inner">
+      <div class="guide-nav-logo">⏱ <em>全機能ガイド</em></div>
+      <div class="guide-nav-links">
+        <a href="#timer">タイマー</a>
+        <a href="#clients">クライアント</a>
+        <a href="#tags">タグ</a>
+        <a href="#memo">メモ</a>
+        <a href="#pomo">ポモドーロ</a>
+        <a href="#theme">テーマ</a>
+        <a href="#sheets">Sheets</a>
+        <a href="#calendar">Calendar</a>
+        <a href="#freetime">空き時間</a>
+        <a href="#invoice">請求書</a>
+        <a href="#report">レポート</a>
+        <a href="#slack">Slack</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guide hero -->
+  <div class="guide-hero">
+    <div class="guide-hero-eyebrow">🌿 全機能ガイド</div>
+    <h2 style="font-family:'M PLUS 1',sans-serif;font-size:clamp(28px,5vw,48px);font-weight:900;letter-spacing:-1px;margin-bottom:12px;line-height:1.15;text-align:center;">Time!Time! <span style="color:var(--mint-dk)">できること</span></h2>
+    <p class="guide-hero-lead">クライアントごとの時間管理から、請求書・Sheets同期・カレンダー連携まで。全機能をまるっと解説します。</p>
+    <div class="toc-grid">
+      <a href="#timer"    class="toc-chip"><span>⏱</span> タイマー基本操作</a>
+      <a href="#clients"  class="toc-chip"><span>👥</span> クライアント管理</a>
+      <a href="#tags"     class="toc-chip"><span>🏷️</span> タグ機能</a>
+      <a href="#memo"     class="toc-chip"><span>📝</span> メモ機能</a>
+      <a href="#pomo"     class="toc-chip"><span>🍅</span> ポモドーロ</a>
+      <a href="#theme"    class="toc-chip"><span>🎨</span> テーマ変更</a>
+      <a href="#sheets"   class="toc-chip"><span>📊</span> Sheets 同期</a>
+      <a href="#calendar" class="toc-chip"><span>📅</span> Calendar 連携</a>
+      <a href="#freetime" class="toc-chip"><span>🕒</span> 空き時間検索</a>
+      <a href="#invoice"  class="toc-chip"><span>🧾</span> 請求書</a>
+      <a href="#report"   class="toc-chip"><span>📈</span> レポート</a>
+      <a href="#slack"    class="toc-chip"><span>💬</span> Slack 連携</a>
+    </div>
+  </div>
+
+  <!-- 01 タイマー基本操作 -->
+  <section class="feat-section" id="timer">
+    <div class="section-tag">01</div>
+    <h2>タイマーの<em>基本操作</em></h2>
+    <p class="section-lead">クライアントを選んで「開始」を押すだけ。稼働中・休憩・終了をボタン1つで切り替えられます。</p>
+    <div class="feat-body">
+      <div class="feat-mockup-wrap">
+        <div class="popup">
+          <div class="popup-bar"></div>
+          <div class="popup-header">
+            <div class="popup-logo"><div class="popup-logo-icon"></div> Time!Time!</div>
+            <div class="popup-icons">
+              <div class="popup-icon-btn">📅</div>
+              <div class="popup-icon-btn">📊</div>
+              <div class="popup-icon-btn">📈</div>
+              <div class="popup-icon-btn">⚙️</div>
+            </div>
+          </div>
+          <div class="popup-timer-card">
+            <div class="popup-status"><div class="status-dot"></div> 稼働中</div>
+            <div class="popup-time">02:34:15</div>
+            <div class="popup-client-name">ハルカ企画</div>
+            <div class="popup-month-row">
+              <span class="popup-month-label">今月合計</span>
+              <span class="popup-month-val">47:22</span>
+            </div>
+          </div>
+          <div class="popup-section-label">クライアント</div>
+          <div class="popup-client-list">
+            <div class="popup-client-row active">
+              <div class="popup-client-left"><div class="client-dot" style="background:#A8C9C4"></div><div class="popup-client-n">ハルカ企画</div></div>
+              <div class="popup-client-t">2:34</div>
+            </div>
+            <div class="popup-client-row">
+              <div class="popup-client-left"><div class="client-dot" style="background:#E8B5B0"></div><div class="popup-client-n">ことり堂</div></div>
+              <div class="popup-client-t" style="color:var(--pink-dk)">0:48</div>
+            </div>
+          </div>
+          <div class="popup-actions">
+            <button class="popup-btn popup-btn-start">▶ 再開</button>
+            <button class="popup-btn popup-btn-break" style="border:1.5px solid rgba(232,181,176,0.5)">休憩</button>
+            <button class="popup-btn popup-btn-stop" style="border:1.5px solid rgba(232,181,176,0.5)">終了</button>
+          </div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>クライアントをタップ</strong>して選択（ハイライト表示になります）</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>「開始」ボタン</strong>を押すとタイマーがスタート。バッジにも経過時間が表示されます</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">休憩したいときは<strong>「休憩」</strong>を押すだけ。休憩時間は稼働時間から自動で除外されます</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>「終了」</strong>を押すとその場で記録が保存。メモを追加することもできます（任意）</div></div>
+        </div>
+        <div class="tip"><div class="tip-icon">💡</div>別のクライアントに切り替えたいときは、一度「終了」してから新しいクライアントを選んで「開始」します。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 クライアント管理 -->
+  <section class="feat-section" id="clients">
+    <div class="section-tag">02</div>
+    <h2>クライアント<em>管理</em></h2>
+    <p class="section-lead">取引先ごとにクライアントを登録。色・時給・月の目標時間を設定できます。</p>
+    <div class="feat-body reverse">
+      <div class="feat-mockup-wrap">
+        <div class="settings-page">
+          <div class="settings-header">⚙️ 設定 — クライアント</div>
+          <div class="settings-card">
+            <div class="settings-card-title"><div class="client-dot" style="background:#A8C9C4;width:10px;height:10px;border-radius:50%"></div>ハルカ企画</div>
+            <div class="settings-field"><div class="settings-field-label">クライアント名</div><input class="settings-input" value="ハルカ企画" readonly></div>
+            <div class="settings-field">
+              <div class="settings-field-label">カラー</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:2px;">
+                <div style="width:20px;height:20px;border-radius:50%;background:#A8C9C4;border:2px solid var(--text)"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:#E8B5B0"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:#D5BDAE"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:#A6B5A5"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:#769CBF"></div>
+              </div>
+            </div>
+            <div class="settings-field"><div class="settings-field-label">時給（円）</div><input class="settings-input" value="3,500" readonly style="width:100px"></div>
+            <div class="settings-field"><div class="settings-field-label">月の目標時間（h）</div><input class="settings-input" value="40" readonly style="width:80px"></div>
+          </div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">拡張機能の<strong>⚙️ 設定</strong>を開く</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">「クライアントを追加」から<strong>名前・カラー</strong>を設定</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>時給</strong>を設定すると「今月の収益」がポップアップに表示されます</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>月の目標時間</strong>を設定するとゴールバーが表示され、達成時に通知が届きます</div></div>
+        </div>
+        <div class="tip"><div class="tip-icon">🎨</div>カラーは Sheets に同期したときの行の色にも使われます。クライアントごとに見分けやすい色を選ぶのがおすすめです。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 タグ機能 -->
+  <section class="feat-section" id="tags">
+    <div class="section-tag">03</div>
+    <h2>タグで<em>作業を分類</em></h2>
+    <p class="section-lead">「ミーティング」「デザイン」「コーディング」など、作業の種類をタグで記録できます。クライアントごとに設定可能。</p>
+    <div class="feat-body">
+      <div class="feat-mockup-wrap">
+        <div class="popup">
+          <div class="popup-bar"></div>
+          <div class="popup-header"><div class="popup-logo"><div class="popup-logo-icon"></div> Time!Time!</div><div class="popup-icons"><div class="popup-icon-btn">⚙️</div></div></div>
+          <div class="popup-timer-card">
+            <div class="popup-status"><div class="status-dot"></div> 稼働中</div>
+            <div class="popup-time">00:45:08</div>
+            <div class="popup-client-name">ことり堂</div>
+          </div>
+          <div class="popup-section-label">タグ</div>
+          <div class="popup-tags">
+            <div class="popup-tag active">デザイン</div>
+            <div class="popup-tag pink-tag">ミーティング</div>
+            <div class="popup-tag">コーディング</div>
+            <div class="popup-tag pink-tag">資料作成</div>
+          </div>
+          <div class="popup-actions">
+            <button class="popup-btn popup-btn-start" style="background:#E8B5B0">▶ 再開</button>
+            <button class="popup-btn" style="border:1.5px solid rgba(168,201,196,0.4);color:var(--mint-dk)">休憩</button>
+            <button class="popup-btn" style="border:1.5px solid rgba(232,181,176,0.4);color:var(--pink-dk)">終了</button>
+          </div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">設定 → クライアント → <strong>「タグを追加」</strong>から名前を入力</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">タイマー起動中にタグをタップすると<strong>ハイライト</strong>（複数選択可）</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">記録したタグは<strong>Sheets に書き出し</strong>たときに「タグ」列に表示されます</div></div>
+        </div>
+        <div class="tip"><div class="tip-icon">💡</div>タグはクライアントごとに独立しています。「ハルカ企画のデザイン」と「ことり堂のデザイン」は別々に管理されます。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 メモ機能 -->
+  <section class="feat-section" id="memo">
+    <div class="section-tag">04</div>
+    <h2>終了後に<em>メモを追加</em></h2>
+    <p class="section-lead">「終了」を押した瞬間に記録が保存されます。その後、8秒間だけメモを追加できるバーが表示されます。</p>
+    <div class="feat-body reverse">
+      <div class="feat-mockup-wrap">
+        <div class="popup">
+          <div class="popup-bar"></div>
+          <div class="popup-header"><div class="popup-logo"><div class="popup-logo-icon"></div> Time!Time!</div><div class="popup-icons"><div class="popup-icon-btn">⚙️</div></div></div>
+          <div class="popup-note-bar">
+            <div class="popup-note-label">メモを追加する（任意）</div>
+            <input class="popup-note-input" value="LP修正・ファーストビュー調整" readonly>
+            <div class="popup-note-btns"><button class="popup-note-skip">スキップ</button><button class="popup-note-confirm">追加する</button></div>
+          </div>
+          <div class="popup-timer-card" style="margin-top:4px;">
+            <div class="popup-status"><div class="status-dot idle"></div> 未開始</div>
+            <div class="popup-time" style="color:var(--text-sm)">00:00:00</div>
+          </div>
+          <div class="popup-section-label">クライアント</div>
+          <div class="popup-client-list">
+            <div class="popup-client-row"><div class="popup-client-left"><div class="client-dot" style="background:#A8C9C4"></div><div class="popup-client-n">ハルカ企画</div></div></div>
+            <div class="popup-client-row"><div class="popup-client-left"><div class="client-dot" style="background:#E8B5B0"></div><div class="popup-client-n">ことり堂</div></div></div>
+          </div>
+          <div class="popup-actions"><button class="popup-btn popup-btn-start">▶ 開始</button></div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>「終了」を押した瞬間</strong>に稼働記録が保存されます</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">画面上部にメモバーが表示（<strong>8秒間</strong>）。入力して「追加する」で記録に紐付け</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">メモ不要なときは<strong>「スキップ」</strong>か Esc キーで閉じる</div></div>
+        </div>
+        <div class="tip"><div class="tip-icon">📝</div>メモは Sheets の「メモ」列に書き出されます。作業内容の詳細を残しておくと請求書作成時に役立ちます。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 ポモドーロ -->
+  <section class="feat-section" id="pomo">
+    <div class="section-tag">05</div>
+    <h2>ポモドーロ<em>タイマー</em></h2>
+    <p class="section-lead">25分作業 → 5分休憩を自動でサイクル。作業時間と休憩時間は自由に変更できます。終了時には癒し系のチャイム音でお知らせ🍀</p>
+    <div class="feat-body">
+      <div class="feat-mockup-wrap">
+        <div class="popup">
+          <div class="popup-bar"></div>
+          <div class="popup-pomo-bar">
+            <span class="pomo-phase-label">🍅 作業中</span>
+            <div class="pomo-track"><div class="pomo-fill" style="width:62%"></div></div>
+            <span class="pomo-countdown">09:28</span>
+          </div>
+          <div class="popup-header"><div class="popup-logo"><div class="popup-logo-icon"></div> Time!Time!</div><div class="popup-icons"><div class="popup-icon-btn">⚙️</div></div></div>
+          <div class="popup-timer-card">
+            <div class="popup-status"><div class="status-dot"></div> 稼働中</div>
+            <div class="popup-time">00:15:32</div>
+            <div class="popup-client-name">ことり堂</div>
+          </div>
+          <div class="popup-actions">
+            <button class="popup-btn" style="flex:2;background:var(--mint);color:white">▶ 再開</button>
+            <button class="popup-btn" style="border:1.5px solid rgba(232,181,176,0.5);color:var(--pink-dk)">終了</button>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="settings-card" style="background:white;border-radius:12px;">
+            <div class="settings-card-title">🍅 ポモドーロ設定</div>
+            <div class="settings-toggle-row"><span class="settings-toggle-label">ポモドーロ有効</span><div class="toggle-pill on"><div class="toggle-thumb"></div></div></div>
+            <div class="settings-field" style="display:flex;gap:12px;">
+              <div><div class="settings-field-label">作業時間（分）</div><input class="settings-input" value="25" readonly style="width:60px"></div>
+              <div><div class="settings-field-label">休憩時間（分）</div><input class="settings-input" value="5" readonly style="width:60px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">設定 → <strong>ポモドーロ</strong> から ON にする</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">タイマー起動中に画面上部の<strong>進捗バー</strong>で残り時間を確認</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">25分経過すると<strong>通知「○○分経過しました🍀」</strong>＋チャイム音が鳴ります</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text">休憩が終わると<strong>「休憩終了です🌿」</strong>の通知で再開をお知らせ</div></div>
+        </div>
+        <div class="tip"><div class="tip-icon">⏱</div>ポモドーロをONにしても、通常の稼働タイマーは普通に動き続けます。ポモドーロはあくまで「お知らせ機能」です。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 テーマ変更 -->
+  <section class="feat-section" id="theme">
+    <div class="section-tag">06</div>
+    <h2>54種の<em>カラーテーマ</em></h2>
+    <p class="section-lead">「春のクローバー」「ドライフラワー」「焦がしキャラメル」など、54種類のテーマで自分色にカスタマイズ。カスタムカラーにも対応。</p>
+    <div class="feat-body reverse">
+      <div class="feat-mockup-wrap">
+        <div class="settings-page">
+          <div class="settings-header">🎨 設定 — カラーテーマ</div>
+          <div class="theme-palette">
+            <div class="theme-chip-sm selected" style="background:#F4EBDA;border-color:#A6B5A5"><div class="theme-swatch-sm" style="background:#A6B5A5"></div><div style="font-size:8px;color:#262724">春の<br>クローバー</div></div>
+            <div class="theme-chip-sm" style="background:#E6E8F1"><div class="theme-swatch-sm" style="background:#CCB3B7"></div><div style="font-size:8px;color:#22292C">ドライ<br>フラワー</div></div>
+            <div class="theme-chip-sm" style="background:#EBE9EA"><div class="theme-swatch-sm" style="background:#D5BDAE"></div><div style="font-size:8px;color:#34251F">ピーチ<br>ラテ</div></div>
+            <div class="theme-chip-sm" style="background:#F9F9F8"><div class="theme-swatch-sm" style="background:#746F57"></div><div style="font-size:8px;color:#2E2214">カーキの<br>キャンバス</div></div>
+            <div class="theme-chip-sm" style="background:#FBFCFF"><div class="theme-swatch-sm" style="background:#344699"></div><div style="font-size:8px;color:#2B262E">星空の<br>プラネタ</div></div>
+          </div>
+          <div style="padding:0 10px 10px;">
+            <div style="font-size:10px;font-weight:700;color:var(--text-sm);margin-bottom:6px">カスタムカラー</div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <div><div style="font-size:9px;color:var(--text-sm);margin-bottom:3px">アクセント</div><div style="width:32px;height:28px;background:#A6B5A5;border-radius:6px;border:1.5px solid rgba(168,201,196,0.3)"></div></div>
+              <div><div style="font-size:9px;color:var(--text-sm);margin-bottom:3px">ベース</div><div style="width:32px;height:28px;background:#F4EBDA;border-radius:6px;border:1.5px solid rgba(168,201,196,0.3)"></div></div>
+              <div><div style="font-size:9px;color:var(--text-sm);margin-bottom:3px">テキスト</div><div style="width:32px;height:28px;background:#262724;border-radius:6px;border:1.5px solid rgba(168,201,196,0.3)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">設定 → <strong>カラーテーマ</strong> を開く</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">54種類のプリセットから<strong>クリックで即適用</strong></div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">さらに<strong>カスタムカラー</strong>でアクセント・ベース・テキスト色を自由に設定</div></div>
+        </div>
+        <div class="tip"><div class="tip-icon">🎨</div>テーマはポップアップ・設定・レポート・請求書のすべてに適用されます。お気に入りの色で作業しましょう。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 Google Sheets -->
+  <section class="feat-section" id="sheets">
+    <div class="section-tag">07</div>
+    <h2>Google Sheets に<em>月次データを書き出し</em></h2>
+    <p class="section-lead">📊ボタンを押すだけで、当月の全稼働記録がスプレッドシートに書き出されます。クライアントの色で行がカラーリングされます。</p>
+    <div class="feat-body">
+      <div class="feat-mockup-wrap">
+        <div class="sheet-table">
+          <div class="sheet-header-row"><div>日付</div><div>クライアント</div><div>開始</div><div>終了</div><div>稼働時間</div><div>メモ</div></div>
+          <div class="sheet-data-row mint-row"><div>2026-05-18</div><div>ハルカ企画</div><div>09:30</div><div>12:00</div><div>2:30</div><div>LP修正</div></div>
+          <div class="sheet-data-row pink-row"><div>2026-05-18</div><div>ことり堂</div><div>13:00</div><div>13:48</div><div>0:48</div><div>MTG</div></div>
+          <div class="sheet-data-row mint-row"><div>2026-05-17</div><div>ハルカ企画</div><div>10:00</div><div>14:30</div><div>4:30</div><div>バナー制作</div></div>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="settings-card" style="background:white;border-radius:12px;">
+            <div class="settings-card-title">📊 Sheets 設定</div>
+            <div class="settings-field"><div class="settings-field-label">スプレッドシート ID</div><input class="settings-input" value="1BxiMVs0XRA5nFMdKvBdBZ..." readonly><div style="font-size:9px;color:var(--text-sm);margin-top:4px">URL の /d/ここ/ の部分</div></div>
+            <div class="settings-toggle-row"><span class="settings-toggle-label">ポップアップ終了時に自動同期</span><div class="toggle-pill off"><div class="toggle-thumb"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">設定 → <strong>Sheets</strong> にスプレッドシート ID を入力</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">ポップアップの<strong>📊 ボタン</strong>を押すと当月のデータを書き出し</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">「2026-05」のような月別シートタブが<strong>自動作成</strong>されます</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text">クライアントの色で<strong>行がカラーリング</strong>され見やすく整形</div></div>
+        </div>
+        <div class="tip"><div class="tip-icon">⚠️</div>初回は Google の認証画面が開いてポップアップが閉じることがあります。認証完了後にもう一度📊を押してください。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 Google Calendar -->
+  <section class="feat-section" id="calendar">
+    <div class="section-tag">08</div>
+    <h2>Google Calendar に<em>自動投入</em></h2>
+    <p class="section-lead">「終了」ボタンを押すと、その稼働時間が Google カレンダーに自動で予定として登録されます。クライアントの色に合わせて色分けも。</p>
+    <div class="feat-body reverse">
+      <div class="feat-mockup-wrap">
+        <div class="settings-page">
+          <div class="settings-header">📅 設定 — Calendar 連携</div>
+          <div class="settings-card">
+            <div class="settings-card-title">📅 Calendar 設定</div>
+            <div class="settings-toggle-row"><span class="settings-toggle-label">終了時にカレンダーへ自動投入</span><div class="toggle-pill on"><div class="toggle-thumb"></div></div></div>
+            <div class="settings-field"><div class="settings-field-label">カレンダー ID</div><input class="settings-input" value="primary" readonly></div>
+            <div class="settings-field"><div class="settings-field-label">タイトルテンプレート</div><input class="settings-input" value="⏱ {client}｜{note}" readonly></div>
+            <div class="settings-toggle-row"><span class="settings-toggle-label">クライアントのカラーに合わせて自動色分け</span><div class="toggle-pill on"><div class="toggle-thumb"></div></div></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;background:white;border-radius:12px;border:1.5px solid rgba(168,201,196,0.2);padding:12px;">
+          <div style="font-size:11px;font-weight:900;color:var(--text-sm);margin-bottom:8px">📅 カレンダーに登録される予定のイメージ</div>
+          <div style="background:rgba(168,201,196,0.15);border-left:3px solid var(--mint);border-radius:0 8px 8px 0;padding:7px 10px;font-size:11px;margin-bottom:6px;"><div style="font-weight:700">⏱ ハルカ企画｜LP修正</div><div style="color:var(--text-sm)">09:30 〜 12:00 (2h30m)</div></div>
+          <div style="background:rgba(232,181,176,0.15);border-left:3px solid var(--pink);border-radius:0 8px 8px 0;padding:7px 10px;font-size:11px;"><div style="font-weight:700">⏱ ことり堂｜MTG</div><div style="color:var(--text-sm)">13:00 〜 13:48 (0h48m)</div></div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">設定 → <strong>Calendar 連携</strong> を ON にする</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">タイマーを「終了」すると<strong>自動でカレンダーに予定が作成</strong>されます</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">タイトルは<code>{client}</code><code>{note}</code>で自由にカスタマイズ</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>自動色分け ON</strong> にするとクライアントカラーに近いカレンダー色が自動適用</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 空き時間検索 -->
+  <section class="feat-section" id="freetime">
+    <div class="section-tag">09</div>
+    <h2>カレンダーから<em>空き時間を検索</em></h2>
+    <p class="section-lead">今後1週間の Google カレンダーの予定を読み込んで、作業可能な空き時間を自動で一覧表示。コピーしてそのままクライアントに送れます。</p>
+    <div class="feat-body">
+      <div class="feat-mockup-wrap">
+        <div class="popup" style="min-height:0">
+          <div class="popup-bar"></div>
+          <div style="padding:12px 14px;border-bottom:1px solid rgba(168,201,196,0.15);">
+            <div style="font-size:13px;font-weight:900;margin-bottom:10px">📅 空き時間</div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;">
+              <div style="background:rgba(168,201,196,0.1);border:1.5px solid rgba(168,201,196,0.25);border-radius:9px;padding:7px 10px;"><div style="font-weight:700;margin-bottom:2px">5/19（月）</div><div style="color:var(--text-sm)">10:00 〜 12:30 （2時間30分）</div><div style="color:var(--text-sm)">14:00 〜 18:00 （4時間）</div></div>
+              <div style="background:rgba(168,201,196,0.1);border:1.5px solid rgba(168,201,196,0.25);border-radius:9px;padding:7px 10px;"><div style="font-weight:700;margin-bottom:2px">5/20（火）</div><div style="color:var(--text-sm)">10:00 〜 15:30 （5時間30分）</div></div>
+              <div style="background:rgba(232,181,176,0.1);border:1.5px solid rgba(232,181,176,0.2);border-radius:9px;padding:7px 10px;"><div style="font-weight:700;margin-bottom:2px">5/21（水）✕ 空き枠なし</div></div>
+            </div>
+          </div>
+          <div style="padding:10px 14px;display:flex;gap:6px;">
+            <button class="popup-note-skip" style="flex:1">↻ 再取得</button>
+            <button class="popup-note-confirm" style="flex:1">📋 コピー</button>
+          </div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">ポップアップ上部の<strong>📅 カレンダーアイコン</strong>をクリック</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">「空き時間を見る」を押すと今後 <strong>7日分の空き枠</strong>が一覧表示</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>📋 コピー</strong>でテキスト形式にコピー → メール・チャットに貼り付け可能</div></div>
+        </div>
+        <div class="tip"><div class="tip-icon">⚙️</div>設定 → 空き時間 で「稼働時間帯（10〜18時など）」「最低スロット時間」「何日先まで見るか」をカスタマイズできます。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 請求書 -->
+  <section class="feat-section" id="invoice">
+    <div class="section-tag">10</div>
+    <h2>クライアント別<em>請求書を発行</em></h2>
+    <p class="section-lead">稼働データからワンクリックで請求書を生成。PDF として印刷・保存できます。税率・支払い情報・備考も設定可能。</p>
+    <div class="feat-body reverse">
+      <div class="feat-mockup-wrap">
+        <div class="invoice-page">
+          <div class="invoice-title-row">
+            <div><div class="invoice-ttl">請求書</div><div class="invoice-date">発行日：2026年05月31日</div></div>
+            <div style="text-align:right"><div style="font-size:10px;color:var(--text-sm)">No. 2026-05-001</div></div>
+          </div>
+          <div class="invoice-parties">
+            <div><div class="invoice-party-label">請求先</div><div class="invoice-party-name">ハルカ企画 御中</div></div>
+            <div style="text-align:right"><div class="invoice-party-label">請求元</div><div class="invoice-party-name">山田 花子</div><div style="font-size:10px;color:var(--text-sm)">hanako@example.com</div></div>
+          </div>
+          <table class="invoice-table">
+            <thead><tr><th>作業内容</th><th>時間</th><th>単価</th><th>金額</th></tr></thead>
+            <tbody><tr><td>稼働（2026年5月）</td><td>47:22</td><td>¥3,500/h</td><td>¥165,750</td></tr></tbody>
+          </table>
+          <div class="invoice-total-row"><span class="invoice-total-label">小計</span><span class="invoice-total-num">¥165,750</span></div>
+          <div class="invoice-total-row"><span class="invoice-total-label">消費税（10%）</span><span class="invoice-total-num">¥16,575</span></div>
+          <div class="invoice-total-row" style="font-size:14px;border-top:1.5px solid rgba(168,201,196,0.3);padding-top:6px;margin-top:4px;"><span style="font-weight:900">合計</span><span style="font-weight:900;color:var(--mint-dk)">¥182,325</span></div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">ポップアップの<strong>📈 レポートボタン</strong> → レポート画面から「請求書」を開く</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>クライアント・月</strong>を選ぶと稼働データが自動集計</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">税率・支払期限・備考などを調整して<strong>ブラウザの印刷 → PDF保存</strong></div></div>
+        </div>
+        <div class="tip"><div class="tip-icon">💡</div>時給を設定してあれば金額も自動計算されます。設定 → 「お名前」に自分の名前を入れておくと請求書に自動で入ります。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 レポート -->
+  <section class="feat-section" id="report">
+    <div class="section-tag">11</div>
+    <h2>月次<em>レポート</em>を確認</h2>
+    <p class="section-lead">クライアントごとの稼働時間・収益・目標達成率をグラフと数字で確認。CSV / JSON でのエクスポートも可能。</p>
+    <div class="feat-body">
+      <div class="feat-mockup-wrap">
+        <div class="report-page">
+          <div class="report-header"><div class="report-title">📈 Time!Time! レポート</div><div class="report-sub">2026年5月 — 稼働サマリー</div></div>
+          <div style="padding:10px 14px;border-bottom:1px solid rgba(168,201,196,0.12);">
+            <div style="display:flex;gap:16px;font-size:12px;">
+              <div><div style="color:var(--text-sm);font-size:10px">今月合計</div><div style="font-weight:900;font-size:18px;color:var(--mint-dk)">47:22</div></div>
+              <div><div style="color:var(--text-sm);font-size:10px">収益（概算）</div><div style="font-weight:900;font-size:18px">¥165,750</div></div>
+              <div><div style="color:var(--text-sm);font-size:10px">稼働日数</div><div style="font-weight:900;font-size:18px">12日</div></div>
+            </div>
+          </div>
+          <div class="report-row"><div class="report-client"><div class="client-dot" style="background:#A8C9C4"></div>ハルカ企画</div><div class="report-hours">32:14</div></div>
+          <div class="report-row"><div class="report-client"><div class="client-dot" style="background:#E8B5B0"></div>ことり堂</div><div class="report-hours" style="color:var(--pink-dk)">10:08</div></div>
+          <div class="report-row"><div class="report-client"><div class="client-dot" style="background:#D5BDAE"></div>デザイン屋</div><div class="report-hours" style="color:#8B7A70">5:00</div></div>
+          <div style="padding:10px 14px;display:flex;gap:6px;">
+            <button class="popup-note-skip" style="flex:1;font-size:10px">CSV</button>
+            <button class="popup-note-skip" style="flex:1;font-size:10px">JSON</button>
+            <button class="popup-note-confirm" style="flex:2;font-size:10px">🧾 請求書を発行</button>
+          </div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">ポップアップの<strong>📈 ボタン</strong>でレポート画面を開く</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">月を選ぶと<strong>クライアント別の稼働時間・収益</strong>が一覧表示</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>CSV / JSON</strong> でエクスポートして Excel・スプレッドシートで加工可能</div></div>
+        </div>
+        <div class="tip"><div class="tip-icon">📊</div>毎週月曜の朝9時に「先週の稼働合計」を通知でお知らせする週次レポート機能もあります。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 Slack 連携 & 離席検知 -->
+  <section class="feat-section" id="slack">
+    <div class="section-tag">12</div>
+    <h2>Slack 連携・<em>離席を自動検知</em></h2>
+    <p class="section-lead">稼働開始・休憩・終了に合わせて Slack のステータスを自動更新。また、PC が一定時間操作されないと休憩モードへの切り替えを通知します。</p>
+    <div class="feat-body reverse">
+      <div class="feat-mockup-wrap">
+        <div class="settings-page">
+          <div class="settings-header">💬 設定 — Slack 連携</div>
+          <div class="settings-card">
+            <div class="settings-card-title">💬 Slack</div>
+            <div class="settings-toggle-row"><span class="settings-toggle-label">Slack ステータスを自動更新</span><div class="toggle-pill on"><div class="toggle-thumb"></div></div></div>
+            <div class="settings-field"><div class="settings-field-label">Slack User Token（xoxp-...）</div><input class="settings-input" value="xoxp-••••••••••••••" readonly></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+              <div class="settings-field"><div class="settings-field-label">稼働中テキスト</div><input class="settings-input" value="稼働中" readonly></div>
+              <div class="settings-field"><div class="settings-field-label">稼働中 絵文字</div><input class="settings-input" value=":computer:" readonly></div>
+              <div class="settings-field"><div class="settings-field-label">休憩中テキスト</div><input class="settings-input" value="休憩中" readonly></div>
+              <div class="settings-field"><div class="settings-field-label">休憩中 絵文字</div><input class="settings-input" value=":coffee:" readonly></div>
+            </div>
+          </div>
+          <div style="margin:0 10px 10px;">
+            <div class="settings-card-title" style="border-radius:12px 12px 0 0;border:1.5px solid rgba(168,201,196,0.2);border-bottom:none;background:white;padding:10px 14px;">🚶 離席検知</div>
+            <div style="background:white;border:1.5px solid rgba(168,201,196,0.2);border-top:none;border-radius:0 0 12px 12px;padding:10px 14px;">
+              <div class="settings-toggle-row" style="padding:0 0 8px;"><span class="settings-toggle-label">離席を自動検知する</span><div class="toggle-pill on"><div class="toggle-thumb"></div></div></div>
+              <div class="settings-field" style="padding:0"><div class="settings-field-label">検知するまでの時間（分）</div><input class="settings-input" value="10" readonly style="width:70px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="feat-explain">
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">Slack の<strong>User Token（xoxp-...）</strong>を設定に入力</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">稼働開始 → <strong>「:computer: 稼働中」</strong>、休憩 → <strong>「:coffee: 休憩中」</strong>に自動更新</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>離席検知 ON</strong>：PC を10分間操作しないとタイマーが動いていても通知が届きます</div></div>
+          <div class="step-item"><div class="step-num pink">4</div><div class="step-text">通知のボタンから<strong>「休憩に切り替える」「そのまま続ける」</strong>を選択できます</div></div>
+        </div>
+        <div class="tip"><div class="tip-icon">🔑</div>Slack Token の取得は api.slack.com → Your Apps → OAuth & Permissions → <code>users.profile:write</code> スコープが必要です。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-hearts">🌿 🌸 🌿</div>
+    <p><strong>Time!Time!</strong> — クライアントワークの、やさしいパートナー</p>
+  </footer>
+
+</div><!-- /.page -->
+
+<script>
+  // ── chrome://extensions copy button ──
+  function copyUrl(btn) {
+    navigator.clipboard.writeText(btn.dataset.copy).then(() => {
+      btn.classList.add('copied');
+      btn.querySelector('.copy-url-icon').textContent = '✅ コピーしました';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.querySelector('.copy-url-icon').textContent = '📋 コピー';
+      }, 2000);
+    });
+  }
+
+  // ── Scroll fade-in ──
+  const animObserver = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.1 }
+  );
+  document.querySelectorAll('[data-anim]').forEach(el => animObserver.observe(el));
+
+  // ── Live timer in mockup ──
+  (function() {
+    const el = document.getElementById('liveTimer');
+    let base = 2 * 3600 + 34 * 60 + 15;
+    setInterval(() => {
+      base++;
+      const h = Math.floor(base / 3600);
+      const m = Math.floor((base % 3600) / 60);
+      const s = base % 60;
+      el.textContent =
+        String(h).padStart(2,'0') + ':' +
+        String(m).padStart(2,'0') + ':' +
+        String(s).padStart(2,'0');
+    }, 1000);
+  })();
+
+  // ── Render theme grid ──
+  const THEMES = [
+    { name:'春のクローバー',     accent:'#A6B5A5', base:'#F4EBDA', text:'#262724' },
+    { name:'ドライフラワー',      accent:'#CCB3B7', base:'#E6E8F1', text:'#22292C' },
+    { name:'ピーチラテ',         accent:'#D5BDAE', base:'#EBE9EA', text:'#34251F' },
+    { name:'ローズビスケット',    accent:'#E4C1B5', base:'#EAE6E1', text:'#544C40' },
+    { name:'霞の海辺',           accent:'#769CBF', base:'#E6E5E4', text:'#25271F' },
+    { name:'砂糖漬けのバラ',      accent:'#D99AAD', base:'#E9E3EB', text:'#2D2E1B' },
+    { name:'イタリアのピザ屋さん',accent:'#CF7F72', base:'#EFDDD5', text:'#482019' },
+    { name:'森の木陰',           accent:'#627962', base:'#F1ECEB', text:'#363427' },
+    { name:'キャラメルラテ',      accent:'#CD8858', base:'#EFE8E4', text:'#412E27' },
+    { name:'アロエの朝',         accent:'#ABBAA9', base:'#F6FAF5', text:'#2C2319' },
+    { name:'桜の花びら',         accent:'#DC9F95', base:'#FFF6EE', text:'#664B4F' },
+    { name:'古書の香り',         accent:'#CBA890', base:'#EFE9E6', text:'#2D2A29' },
+    { name:'レモンスコーン',      accent:'#D49B65', base:'#F4EAEA', text:'#493024' },
+    { name:'薄紫の夕暮れ',       accent:'#A883A9', base:'#FDECED', text:'#8A604D' },
+    { name:'バニラカフェ',        accent:'#D6BDA5', base:'#FFFEF9', text:'#6C6059' },
+    { name:'焼きたてシナモン',    accent:'#D58A6A', base:'#FDFFFA', text:'#8F6140' },
+    { name:'ラベンダーの夢',      accent:'#9EC2C2', base:'#F8F4F2', text:'#5D4E72' },
+    { name:'苔むす石畳',         accent:'#859A93', base:'#FFFCF7', text:'#544739' },
+    { name:'アンティークゴールド',accent:'#9F9460', base:'#EFF0F0', text:'#31371B' },
+    { name:'深紅のバラ',         accent:'#AA4D53', base:'#F7F6F6', text:'#4C2F3B' },
+    { name:'ロンドンの霧',       accent:'#A296AF', base:'#F1F1F1', text:'#423929' },
+    { name:'大西洋の夜',         accent:'#135389', base:'#FBFEFF', text:'#30343A' },
+    { name:'煉瓦の路地',         accent:'#A92708', base:'#E9E3DD', text:'#3C0F0A' },
+    { name:'ダマスクの薔薇',      accent:'#922951', base:'#EDEDED', text:'#4B3C39' },
+    { name:'レトロ喫茶',         accent:'#446E72', base:'#E6E4E0', text:'#2B2721' },
+    { name:'ひだまりの縁側',      accent:'#D89323', base:'#FFF9F4', text:'#33362F' },
+    { name:'星空のプラネタリウム', accent:'#344699', base:'#FBFCFF', text:'#2B262E' },
+    { name:'草原の夕暮れ',       accent:'#365C3B', base:'#FFF3E7', text:'#43311F' },
+    { name:'カーキのキャンバス',   accent:'#746F57', base:'#F9F9F8', text:'#2E2214' },
+    { name:'チョコレートショップ', accent:'#955A41', base:'#FAFAFA', text:'#342721' },
+    { name:'夜の図書館',         accent:'#6F789D', base:'#F3F3F3', text:'#35322E' },
+    { name:'アイルランドの丘',    accent:'#5F7F67', base:'#FDFDFD', text:'#2C4242' },
+    { name:'砂漠のサンセット',    accent:'#D2986A', base:'#FFF6EC', text:'#4B4D37' },
+    { name:'地中海の港',         accent:'#00536D', base:'#FFF3E3', text:'#592D13' },
+    { name:'ローマの夕焼け',      accent:'#E7674C', base:'#FEFFFA', text:'#444949' },
+    { name:'マーマレードジャム',   accent:'#E8854A', base:'#FDFDFD', text:'#4C3725' },
+    { name:'ペパーミントソーダ',   accent:'#28A6A5', base:'#F9FCFD', text:'#082627' },
+    { name:'春の新芽',           accent:'#9CA00E', base:'#F8EFE5', text:'#262015' },
+    { name:'バレンシアオレンジ',   accent:'#E97F12', base:'#FBFCFD', text:'#4D4535' },
+    { name:'苺のムース',          accent:'#D86F87', base:'#E6E5E2', text:'#595851' },
+    { name:'麦わら帽子',         accent:'#B4BC4E', base:'#FFFBEC', text:'#6B5E56' },
+    { name:'焦がしキャラメル',    accent:'#DB6010', base:'#FFEEDB', text:'#5B2908' },
+    { name:'ポピー畑',           accent:'#CB5457', base:'#FDF7F5', text:'#515D46' },
+    { name:'フレッシュバジル',    accent:'#007A02', base:'#FDFDFD', text:'#473927' },
+    { name:'夕方のひまわり',      accent:'#E9A02A', base:'#F6ECDC', text:'#5F5434' },
+    { name:'野いちご',           accent:'#D04337', base:'#FFFCF9', text:'#96705C' },
+    { name:'桃の季節',           accent:'#E27447', base:'#F8F8F8', text:'#443D3A' },
+    { name:'情熱のフラメンコ',    accent:'#CF2B0E', base:'#F8FBFD', text:'#1E211B' },
+    { name:'アメジストの森',      accent:'#A05CB0', base:'#FDF6F8', text:'#5B4945' },
+    { name:'マリンボーダー',      accent:'#DD4A33', base:'#FFFCFC', text:'#3B535F' },
+  ];
+
+  const grid = document.getElementById('themeGrid');
+  THEMES.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'theme-chip';
+    div.style.background = t.base;
+    div.style.borderColor = t.accent + '44';
+    div.innerHTML = `
+      <div class="theme-swatch" style="background:${t.accent}"></div>
+      <div class="theme-chip-name" style="color:${t.text}">${t.name}</div>
+    `;
+    grid.appendChild(div);
+  });
+</script>
+
+</body>
+</html>

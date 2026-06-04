@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Time!Time! — レポート</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="report.css">
+</head>
+<body>
+
+<div class="page">
+  <header class="page-header">
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 15.5"/>
+      </svg>
+      <span>Time!Time! <em>レポート</em></span>
+    </div>
+    <button class="btn-invoice" id="invoiceBtn">請求書を作成</button>
+  </header>
+
+  <main class="content">
+
+    <!-- Period selector -->
+    <div class="period-nav">
+      <button class="period-btn" id="prevBtn">← 前の週</button>
+      <span class="period-label" id="periodLabel">今週</span>
+      <button class="period-btn" id="nextBtn">次の週 →</button>
+    </div>
+
+    <!-- SVG Pie Chart -->
+    <section class="card chart-card">
+      <h2 class="card-title">クライアント別 稼働時間</h2>
+      <div class="chart-wrap">
+        <svg id="pieChart" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="chart-legend" id="chartLegend"></div>
+      </div>
+      <div class="chart-total" id="chartTotal">合計 0:00</div>
+    </section>
+
+    <!-- Daily breakdown -->
+    <section class="card">
+      <h2 class="card-title">日別内訳</h2>
+      <div class="day-list" id="dayList"></div>
+    </section>
+
+    <!-- Client summary table -->
+    <section class="card">
+      <h2 class="card-title">クライアント別まとめ</h2>
+      <div class="report-table-wrap">
+        <table class="report-table" id="reportTable">
+          <thead>
+            <tr>
+              <th>クライアント</th>
+              <th>今週</th>
+              <th>今月</th>
+              <th>目標達成率</th>
+            </tr>
+          </thead>
+          <tbody id="reportTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tag summary -->
+    <section class="card" id="tagSection" hidden>
+      <h2 class="card-title">タグ別 稼働時間</h2>
+      <div class="tag-report" id="tagReport"></div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Entry Edit Modal -->
+<div class="modal-overlay" id="editModalOverlay" hidden>
+  <div class="modal">
+    <h3 class="modal-title">記録を編集</h3>
+
+    <div class="modal-date-badge" id="editDateBadge"></div>
+
+    <div class="time-row">
+      <div class="field-group">
+        <label class="field-label" for="editStartTime">開始</label>
+        <input class="text-input" type="time" id="editStartTime">
+      </div>
+      <span class="time-sep">〜</span>
+      <div class="field-group">
+        <label class="field-label" for="editEndTime">終了</label>
+        <input class="text-input" type="time" id="editEndTime">
+      </div>
+      <div class="duration-preview" id="durationPreview">0:00</div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="editClient">クライアント</label>
+      <select class="text-input" id="editClient"></select>
+    </div>
+
+    <div class="field-group" id="editTagGroup">
+      <label class="field-label">タグ</label>
+      <div class="edit-tag-chips" id="editTagChips"></div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label" for="editNote">メモ</label>
+      <input class="text-input" type="text" id="editNote" placeholder="任意">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-del" id="editDeleteBtn">削除</button>
+      <div class="modal-actions-right">
+        <button class="btn-cancel" id="editCancelBtn">キャンセル</button>
+        <button class="btn-save" id="editSaveBtn">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="lib/utils.js"></script>
+<script src="lib/storage.js"></script>
+<script src="lib/themes.js"></script>
+<script src="report.js"></script>
+</body>
+</html>

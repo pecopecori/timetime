@@ -1,0 +1,17 @@
+# LP・配布用ドキュメント（デザイン保護）
+demo_docs/
+
+# 生成ファイル
+*.zip
+!deploy-cloudflare/timetime.zip
+generate-icons.js
+
+# デモ・お試し系（重い）
+demo/
+
+# Cloudflare キャッシュ
+.wrangler/
+deploy-cloudflare/.wrangler/
+
+# OS
+.DS_Store

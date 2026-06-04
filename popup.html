@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Time!Time!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="12" cy="12" r="9"/>
+        <polyline points="12 7 12 12 15.5 15.5"/>
+      </svg>
+      <span class="logo-text">Time!Time!</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="freetimeBtn" title="空き時間">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="syncBtn" title="Sheetsに同期">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
+          <line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="reportBtn" title="レポート">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+          <line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="settingsBtn" title="設定">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Pomodoro Bar (display only — shown when pomodoro is active) -->
+  <div class="pomodoro-bar" id="pomodoroBar" hidden>
+    <span class="pomo-phase" id="pomoPhase">ポモドーロ</span>
+    <div class="pomo-track">
+      <div class="pomo-fill" id="pomoFill"></div>
+    </div>
+    <span class="pomo-countdown" id="pomoCountdown">25:00</span>
+  </div>
+
+  <!-- Timer Card -->
+  <div class="timer-card" id="timerCard">
+    <div class="timer-top">
+      <div class="status-badge" id="statusBadge">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">未開始</span>
+      </div>
+      <div class="today-chip">
+        <span class="chip-label">今日</span>
+        <span class="chip-value" id="todayTotal">0:00</span>
+      </div>
+    </div>
+    <div class="timer-display" id="timerDisplay">00:00:00</div>
+    <div class="timer-client" id="timerClient">クライアントを選択してください</div>
+
+    <!-- Goal progress bar (hidden unless client has monthlyGoalHours) -->
+    <div class="goal-bar" id="goalBar" hidden>
+      <div class="goal-header">
+        <span class="goal-label">今月の目標</span>
+        <span class="goal-pct" id="goalPct">0%</span>
+      </div>
+      <div class="goal-track">
+        <div class="goal-fill" id="goalFill"></div>
+      </div>
+    </div>
+
+    <!-- Earnings (hidden unless showEarnings) -->
+    <div class="earnings-row" id="earningsRow" hidden>
+      <span class="earnings-label">今月収益</span>
+      <span class="earnings-value" id="earningsValue">¥0</span>
+    </div>
+
+    <div class="month-bar" id="monthBar">
+      <span class="month-label">今月合計</span>
+      <span class="month-value" id="monthTotal">0:00</span>
+    </div>
+  </div>
+
+  <!-- Client List -->
+  <div class="section">
+    <div class="section-label">クライアント</div>
+    <div class="client-list" id="clientList">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+
+  <!-- Task List (hidden when no tasks defined for the selected client) -->
+  <div class="section task-section" id="taskSection" hidden>
+    <div class="section-label-row">
+      <span class="section-label">タスク</span>
+      <span class="section-label-hint" id="taskCountHint"></span>
+    </div>
+    <div class="task-list" id="taskList">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+
+  <!-- Tag Chips (hidden when no tags defined) -->
+  <div class="section tag-section" id="tagSection" hidden>
+    <div class="section-label">タグ</div>
+    <div class="tag-chips" id="tagChips">
+      <!-- rendered by JS -->
+    </div>
+  </div>
+
+  <!-- Memo append bar (shown after stop — optional, entry already saved) -->
+  <div class="note-bar" id="noteBar" hidden>
+    <div class="note-bar-label">メモを追加する（任意）</div>
+    <input class="note-input" type="text" id="noteInput" placeholder="何をやったか…（後から変更もできます）" maxlength="100">
+    <div class="note-actions">
+      <button class="note-skip-btn" id="noteSkipBtn">スキップ</button>
+      <button class="note-confirm-btn" id="noteConfirmBtn">追加する</button>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-bar">
+    <button class="btn btn-start" id="startBtn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <span id="startBtnLabel">開始</span>
+    </button>
+    <button class="btn btn-break" id="breakBtn" disabled>
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      休憩
+    </button>
+    <button class="btn btn-stop" id="stopBtn" disabled>
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+      終了
+    </button>
+  </div>
+
+</div>
+
+<!-- Calendar Modal (shows upcoming events, link to free-time view) -->
+<div class="freetime-overlay" id="calendarOverlay" hidden>
+  <div class="freetime-panel">
+    <div class="freetime-head">
+      <span class="freetime-title">📅 カレンダー</span>
+      <button class="freetime-close" id="calendarCloseBtn" aria-label="閉じる">×</button>
+    </div>
+    <div class="freetime-body" id="calendarBody">
+      <div class="freetime-loading">読み込み中...</div>
+    </div>
+    <div class="freetime-foot">
+      <button class="note-skip-btn" id="calendarReloadBtn">↻ 再取得</button>
+      <button class="note-confirm-btn" id="gotoFreetimeBtn">🕒 空き時間を見る</button>
+    </div>
+  </div>
+</div>
+
+<!-- Free-time Modal (full-popup overlay) -->
+<div class="freetime-overlay" id="freetimeOverlay" hidden>
+  <div class="freetime-panel">
+    <div class="freetime-head">
+      <span class="freetime-title">📅 空き時間</span>
+      <button class="freetime-close" id="freetimeCloseBtn" aria-label="閉じる">×</button>
+    </div>
+    <div class="freetime-body" id="freetimeBody">
+      <div class="freetime-loading">読み込み中...</div>
+    </div>
+    <div class="freetime-foot">
+      <button class="note-skip-btn" id="freetimeReloadBtn">↻ 再取得</button>
+      <button class="note-confirm-btn" id="freetimeCopyBtn">📋 コピー</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="lib/utils.js"></script>
+<script src="lib/storage.js"></script>
+<script src="lib/themes.js"></script>
+<script src="lib/sheets.js"></script>
+<script src="lib/calendar.js"></script>
+<script src="lib/slack.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

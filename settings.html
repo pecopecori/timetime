@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Time!Time! — 設定</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="settings.css">
+  <style>
+    .settings-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(var(--base-rgb, 250,240,235), 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1.5px solid rgba(var(--accent-rgb, 168,201,196), 0.25);
+      display: flex;
+      gap: 2px;
+      padding: 8px 12px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin: -24px -24px 24px;  /* .content のパディングを打ち消す */
+    }
+    .settings-nav::-webkit-scrollbar { display: none; }
+    .settings-nav a {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(var(--text-rgb, 61,53,48), 0.6);
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+    }
+    .settings-nav a:hover {
+      background: rgba(var(--accent-rgb, 168,201,196), 0.18);
+      color: rgba(var(--text-rgb, 61,53,48), 1);
+    }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    .setup-summary { display: flex; align-items: center; gap: 8px; user-select: none; }
+    .setup-summary::after {
+      content: '▼';
+      margin-left: auto;
+      font-size: 10px;
+      opacity: 0.5;
+      transition: transform 0.2s;
+    }
+    details[open] .setup-summary::after { transform: rotate(180deg); }
+
+    /* ── How-to guide ── */
+    .guide-details { border-bottom: 1px solid rgba(var(--accent-rgb,166,181,165), 0.2); }
+    .guide-details:last-child { border-bottom: none; }
+    .guide-summary {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 0; cursor: pointer; list-style: none; user-select: none;
+    }
+    .guide-summary::-webkit-details-marker { display: none; }
+    .guide-num {
+      flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+      background: rgba(var(--accent-rgb,166,181,165), 0.18);
+      border: 1.5px solid rgba(var(--accent-rgb,166,181,165), 0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 900; color: var(--accent, #6EAAA4);
+    }
+    .guide-title { font-weight: 900; font-size: 13px; flex-shrink: 0; }
+    .guide-lead { font-size: 11px; color: rgba(var(--text-rgb,38,39,36), 0.5); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .guide-summary::after {
+      content: '▼'; flex-shrink: 0; font-size: 9px;
+      opacity: 0.4; transition: transform 0.2s; margin-left: 6px;
+    }
+    details[open] .guide-summary::after { transform: rotate(180deg); }
+    .guide-content { padding: 2px 0 16px 34px; }
+    .guide-step-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+    .guide-step-item { display: flex; gap: 10px; align-items: flex-start; }
+    .guide-step-num {
+      flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(var(--accent-rgb,166,181,165), 0.18);
+      border: 1.5px solid rgba(var(--accent-rgb,166,181,165), 0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 900; color: var(--accent, #6EAAA4); margin: 0;
+    }
+    .guide-step-num.pink { background: rgba(232,181,176,0.18); border-color: rgba(232,181,176,0.4); color: #C88076; }
+    .guide-step-text { font-size: 12px; line-height: 1.75; padding-top: 2px; }
+    .guide-step-text code {
+      background: rgba(var(--accent-rgb,166,181,165), 0.18); padding: 1px 6px;
+      border-radius: 5px; font-size: 10px; font-weight: 700; color: var(--accent);
+    }
+    .guide-tip {
+      display: flex; gap: 8px; align-items: flex-start;
+      background: rgba(232,181,176,0.12); border: 1.5px solid rgba(232,181,176,0.3);
+      border-radius: 9px; padding: 9px 12px;
+      font-size: 11px; line-height: 1.75; color: rgba(var(--text-rgb,38,39,36), 0.7);
+      margin-top: 2px;
+    }
+    .guide-tip-icon { flex-shrink: 0; font-size: 13px; margin-top: 1px; }
+
+    /* ── Reauth row ── */
+    .reauth-row {
+      display: flex; align-items: center; gap: 12px;
+      margin-top: 14px; flex-wrap: wrap;
+    }
+
+    /* ── Data info block ── */
+    .data-info { margin-bottom: 18px; }
+    .data-info-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 12px; margin-bottom: 14px;
+    }
+    .data-info-table th {
+      background: rgba(var(--accent-rgb, 168,201,196), 0.18);
+      color: rgba(var(--text-rgb, 61,53,48), 0.7);
+      font-size: 10px; font-weight: 900; letter-spacing: 0.8px;
+      text-align: left; padding: 6px 10px;
+    }
+    .data-info-table th:first-child { border-radius: 8px 0 0 8px; }
+    .data-info-table th:last-child  { border-radius: 0 8px 8px 0; }
+    .data-info-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid rgba(var(--accent-rgb, 168,201,196), 0.15);
+      color: rgba(var(--text-rgb, 61,53,48), 0.85);
+      vertical-align: middle;
+    }
+    .data-info-table tr:last-child td { border-bottom: none; }
+    .data-badge {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      padding: 2px 7px; border-radius: 6px; white-space: nowrap;
+    }
+    .data-badge.sync {
+      background: rgba(var(--accent-rgb, 168,201,196), 0.22);
+      color: #5A9E98;
+    }
+    .data-badge.local {
+      background: rgba(232,181,176,0.22);
+      color: #B87068;
+    }
+    .data-badge.ok  { background: rgba(120,190,140,0.2); color: #3A8A5A; }
+    .data-badge.ng  { background: rgba(200,200,200,0.25); color: #888; }
+    .data-warn-list {
+      list-style: none; padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .data-warn-list li {
+      display: flex; gap: 8px; align-items: flex-start;
+      font-size: 12px; line-height: 1.6;
+      color: rgba(var(--text-rgb, 61,53,48), 0.8);
+    }
+    .data-warn-list li .warn-icon {
+      flex-shrink: 0; font-size: 13px; margin-top: 1px;
+    }
+    .data-section-label {
+      font-size: 10px; font-weight: 900; letter-spacing: 1px;
+      color: rgba(var(--text-rgb, 61,53,48), 0.45);
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <header class="page-header">
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="12" cy="12" r="9"/>
+        <polyline points="12 7 12 12 15.5 15.5"/>
+      </svg>
+      <span>Time!Time! <em>設定</em></span>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <!-- ── SETTINGS NAV ── -->
+    <nav class="settings-nav">
+      <a href="#sec-basic">👤 基本情報</a>
+      <a href="#themeSection">🎨 テーマ</a>
+      <a href="#clientSection">👥 クライアント</a>
+      <a href="#sec-billing">💴 時給・締め日</a>
+      <a href="#sec-pomo">🍅 ポモドーロ</a>
+      <a href="#sec-idle">💤 アイドル</a>
+      <a href="#sec-slack">💬 Slack</a>
+      <a href="#setupGuide">🚀 Google連携</a>
+      <a href="#sec-calendar">📅 Calendar</a>
+      <a href="#sec-sheets">📊 Sheets</a>
+      <a href="#sec-data">🗄 データ</a>
+      <a href="#sec-guide">📖 使い方</a>
+    </nav>
+
+    <!-- ── Section: 基本情報 ── -->
+    <section class="card" id="sec-basic">
+      <h2 class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+        </svg>
+        基本情報
+      </h2>
+      <div class="field-group">
+        <label class="field-label" for="providerName">お名前（請求書・レポートに使用）</label>
+        <input class="text-input" type="text" id="providerName" placeholder="例：山田 花子">
+        <p class="field-hint">請求書の「請求元」欄に自動で入ります。</p>
+      </div>
+    </section>
+
+    <!-- ── Section: テーマ ── -->
+    <section class="card" id="themeSection">
+      <h2 class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+        </svg>
+        カラーテーマ
+      </h2>
+      <div class="preset-section">
+        <p class="field-label">プリセット（クリックで適用）</p>
+        <div class="palette-grid" id="paletteGrid"></div>
+      </div>
+      <div class="custom-colors">
+        <p class="field-label">カスタムカラー</p>
+        <div class="color-row">
+          <label class="color-field">
+            <span>アクセント</span>
+            <div class="color-picker-wrap"><input type="color" id="colorAccent"></div>
+          </label>
+          <label class="color-field">
+            <span>ベース</span>
+            <div class="color-picker-wrap"><input type="color" id="colorBase"></div>
+          </label>
+          <label class="color-field">
+            <span>テキスト</span>
+            <div class="color-picker-wrap"><input type="color" id="colorText"></div>
+          </label>
+        </div>
+        <div class="theme-preview" id="themePreview">
+          <div class="preview-header">
+            <span class="preview-dot"></span>
+            <span class="preview-title">Time!Time!</span>
+          </div>
+          <div class="preview-timer">01:23:45</div>
+          <div class="preview-bar">
+            <span class="preview-btn">開始</span>
+            <span class="preview-btn preview-btn-ghost">休憩</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Section: クライアント ── -->
+    <section class="card" id="clientSection">
+      <div class="card-title-row">
+        <h2 class="card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          クライアント管理
+        </h2>
+        <button class="btn-add" id="addClientBtn">+ 追加</button>
+      </div>
+      <div class="client-list" id="clientSettingList"></div>
+    </section>
+
+    <!-- ── Section: 時給・締め日 ── -->
+    <section class="card" id="sec-billing">
+      <h2 class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        時給・締め日
+      </h2>
+      <div class="field-group">
+        <label class="toggle-row">
+          <span>時給・収益を表示する</span>
+          <input type="checkbox" id="showEarnings" class="toggle-input">
+          <span class="toggle-thumb"></span>
+        </label>
+        <p class="field-hint" style="margin-top:6px">オンにすると、ポップアップに今月の概算収益が表示されます（クライアントごとに時給を設定）</p>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="billingDay">締め日（毎月 何日）</label>
+        <div class="number-row">
+          <input class="text-input number-input" type="number" id="billingDay" min="1" max="28" value="1">
+          <span class="number-unit">日締め</span>
+        </div>
+        <p class="field-hint">例：25 と入力すると 毎月25日〜翌月24日 が請求期間になります</p>
+      </div>
+    </section>
+
+    <!-- ── Section: ポモドーロ ── -->
+    <section class="card" id="sec-pomo">
+      <h2 class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 15.5"/>
+        </svg>
+        ポモドーロモード
+      </h2>
+      <div class="field-group">
+        <label class="toggle-row">
+          <span>ポモドーロモードを使う</span>
+          <input type="checkbox" id="pomodoroEnabled" class="toggle-input">
+          <span class="toggle-thumb"></span>
+        </label>
+        <p class="field-hint" style="margin-top:6px">稼働開始と同時にカウントダウンが始まり、作業・休憩を自動で通知します</p>
+      </div>
+      <div class="pomo-settings" id="pomoSettings">
+        <div class="two-col">
+          <div class="field-group">
+            <label class="field-label" for="pomoWork">作業時間（分）</label>
+            <input class="text-input number-input" type="number" id="pomoWork" min="1" max="90" value="25">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="pomoBreak">休憩時間（分）</label>
+            <input class="text-input number-input" type="number" id="pomoBreak" min="1" max="30" value="5">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Section: アイドル検知 ── -->
+    <section class="card" id="sec-idle">
+      <h2 class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <circle cx="19" cy="7" r="2"/><path d="M23 21v-1a4 4 0 0 0-3-3.87"/>
+        </svg>
+        アイドル検知
+      </h2>
+      <div class="field-group">
+        <label class="toggle-row">
+          <span>離席を自動検知する</span>
+          <input type="checkbox" id="idleEnabled" class="toggle-input">
+          <span class="toggle-thumb"></span>
+        </label>
+        <p class="field-hint" style="margin-top:6px">席を外しているときに稼働タイマーが動いていると通知します</p>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="idleThreshold">検知するまでの時間（分）</label>
+        <div class="number-row">
+          <input class="text-input number-input" type="number" id="idleThreshold" min="1" max="60" value="10">
+          <span class="number-unit">分間 操作なしで通知</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Section: Slack連携 ── -->
+    <section class="card" id="sec-slack">
+      <h2 class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22.08 9C19.72 2.17 12.3-1.29 5.46 1.07S-1.29 11.7 1.07 18.54 11.7 25.29 18.54 22.93 25.29 14.3 22.93 7.46"/>
+          <polyline points="22 2 11 13"/><polyline points="15 2 22 2 22 9"/>
+        </svg>
+        Slackステータス連動
+      </h2>
+      <div class="field-group">
+        <label class="toggle-row">
+          <span>Slackステータスを自動更新する</span>
+          <input type="checkbox" id="slackEnabled" class="toggle-input">
+          <span class="toggle-thumb"></span>
+        </label>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="slackToken">ユーザートークン（xoxp-…）</label>
+        <input class="text-input" type="password" id="slackToken" placeholder="xoxp-0000000000-...">
+        <p class="field-hint">
+          Slack API → Your Apps → OAuth &amp; Permissions でユーザートークンを発行してください。<br>
+          必要スコープ：<code>users.profile:write</code>
+        </p>
+      </div>
+      <div class="two-col">
+        <div class="field-group">
+          <label class="field-label" for="slackWorkText">稼働中のテキスト</label>
+          <input class="text-input" type="text" id="slackWorkText" value="稼働中">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="slackWorkEmoji">絵文字</label>
+          <input class="text-input" type="text" id="slackWorkEmoji" value=":computer:" placeholder=":computer:">
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field-group">
+          <label class="field-label" for="slackBreakText">休憩中のテキスト</label>
+          <input class="text-input" type="text" id="slackBreakText" value="休憩中">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="slackBreakEmoji">絵文字</label>
+          <input class="text-input" type="text" id="slackBreakEmoji" value=":coffee:" placeholder=":coffee:">
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Section: セットアップマニュアル ── -->
+    <section class="card" id="setupGuide">
+      <details>
+      <summary class="card-title setup-summary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+        </svg>
+        🚀 はじめての方へ｜Google連携セットアップ手順
+      </summary>
+      <p class="field-hint" style="margin-bottom:14px">
+        Sheets連携（スプシ同期）と Calendar連携（予定の自動投入・空き時間検索）の両方で、この手順が<strong>最初の一度だけ</strong>必要です🌷<br>
+        所要時間：10〜15分くらい。途中で迷ったら各ステップの「💡困ったら」を見てください。<br>
+        <span style="color:rgba(var(--text-rgb),0.55)">※ 既に Sheets で動いている方は、<strong>STEP 2-2 だけ追加</strong>すれば Calendar も使えます。</span>
+      </p>
+
+      <div class="field-group" style="margin-bottom:18px; padding:12px 14px; background:rgba(var(--accent-rgb),0.10); border:1.5px dashed rgba(var(--accent-rgb),0.4); border-radius:var(--radius-md)">
+        <p class="field-label" style="margin-bottom:8px">🛠 よく使うショートカット</p>
+        <div class="btn-row" style="flex-wrap:wrap; gap:8px">
+          <button class="btn-secondary" id="openExtensionsPageBtn" type="button">📁 拡張機能フォルダを確認</button>
+          <button class="btn-secondary" id="openCloudConsoleBtn" type="button">🌐 Cloud Console を開く</button>
+          <button class="btn-secondary" id="openCredentialsBtn" type="button">🔑 認証情報ページを開く</button>
+        </div>
+        <p class="field-hint" style="margin-top:8px">
+          ↑「拡張機能フォルダを確認」を押すと <code>chrome://extensions/</code> が開きます。<br>
+          そこで<strong>「読み込み元」のパス</strong>をクリックすると、Finderで拡張機能のフォルダが開きます🌷
+        </p>
+      </div>
+
+      <div class="setup-steps-inline">
+
+        <!-- ============= STEP 1 ============= -->
+        <div class="setup-step-inline">
+          <div class="setup-step-num">1</div>
+          <div class="setup-step-body">
+            <div class="setup-step-title">Google Cloud Console でプロジェクトを作る
+              <a href="https://console.cloud.google.com/" target="_blank" class="setup-link">→ 開く</a>
+            </div>
+
+            <p class="setup-step-meta"><strong>📌 これは何？</strong></p>
+            <p class="setup-step-desc">
+              Google Cloud Console（クラウドコンソール）は、Googleが提供するAPI管理画面のこと。<br>
+              「<strong>プロジェクト</strong>」というのは、<strong>API利用権のひとまとまり</strong>のようなものです。
+              （例：Time!Time!プロジェクト＝Time!Time!が使うAPIをまとめておく箱）
+            </p>
+
+            <p class="setup-step-meta"><strong>🎯 なぜ必要？</strong></p>
+            <p class="setup-step-desc">
+              これから「Sheets API」「Calendar API」を使えるようにするのですが、その<strong>受け皿</strong>になる場所が必要です。プロジェクトを作ってあげると、その中でAPIを有効化したり、鍵を発行したりできます。
+            </p>
+
+            <p class="setup-step-meta"><strong>✏️ 手順</strong></p>
+            <p class="setup-step-desc">
+              ① 上の「→ 開く」リンクから Google Cloud Console を開く<br>
+              ② Googleアカウントでログインする（はじめての方は利用規約に同意）<br>
+              ③ 画面上部の「<strong>プロジェクトを選択</strong>」というプルダウンをクリック<br>
+              ④ 出てきたダイアログの右上「<strong>新しいプロジェクト</strong>」をクリック<br>
+              ⑤ プロジェクト名を入力（例：<code>Time!Time!</code>、英数字でも日本語でもOK）<br>
+              ⑥ 「<strong>作成</strong>」ボタンを押す<br>
+              ⑦ 作成完了の通知が出たら、もう一度上部プルダウンを開いて、<strong>今作ったプロジェクト名を選択</strong>した状態にする<br>
+              ⑧ 画面左上に「Time!Time!」と表示されたらOK
+            </p>
+
+            <p class="setup-step-meta"><strong>💡 困ったら</strong></p>
+            <p class="setup-step-desc">
+              ・<strong>「組織を選択」と出た</strong>→「組織なし」でOK<br>
+              ・<strong>有料登録を求められない？</strong>→無料枠で十分動きます。クレジットカード登録も不要<br>
+              ・<strong>プロジェクト名は後から変えられる？</strong>→変えられます。最初はテキトーでも大丈夫
+            </p>
+          </div>
+        </div>
+
+        <!-- ============= STEP 2 ============= -->
+        <div class="setup-step-inline">
+          <div class="setup-step-num">2</div>
+          <div class="setup-step-body">
+            <div class="setup-step-title">使うAPIを2つ有効化する</div>
+
+            <p class="setup-step-meta"><strong>📌 これは何？</strong></p>
+            <p class="setup-step-desc">
+              「API」は、Googleのサービス（SheetsやCalendar）に対して「データを書き込んで」「予定を取って」と依頼する<strong>窓口</strong>です。<br>
+              デフォルトでは閉まっているので、<strong>「使うよ」と宣言する作業＝有効化</strong>が必要です。
+            </p>
+
+            <p class="setup-step-meta"><strong>🎯 なぜ必要？</strong></p>
+            <p class="setup-step-desc">
+              ・<strong>Sheets API</strong>を有効化しないと → 稼働データのスプシ書き込みができない<br>
+              ・<strong>Calendar API</strong>を有効化しないと → カレンダーへの予定投入・空き時間検索ができない<br>
+              どっちか片方だけでも動きますが、両方使うなら<strong>両方</strong>有効化が必要です。
+            </p>
+
+            <p class="setup-step-meta"><strong>✏️ 手順（2-1: Sheets API）</strong></p>
+            <p class="setup-step-desc">
+              ① 下のリンクをクリックで開く<br>
+              　<a href="https://console.cloud.google.com/apis/library/sheets.googleapis.com" target="_blank" class="setup-link">→ Sheets API を開く</a><br>
+              ② 画面左上に <strong>STEP 1 で作ったプロジェクト名</strong>が表示されていることを確認<br>
+              　（違うプロジェクトが表示されていたらプルダウンで切り替え）<br>
+              ③ 「Google Sheets API」のタイトル下にある<strong>青い「有効にする」ボタン</strong>をクリック<br>
+              ④ 「APIが有効化されました」と表示されたらOK
+            </p>
+
+            <p class="setup-step-meta"><strong>✏️ 手順（2-2: Calendar API）</strong></p>
+            <p class="setup-step-desc">
+              ① 下のリンクをクリックで開く<br>
+              　<a href="https://console.cloud.google.com/apis/library/calendar-json.googleapis.com" target="_blank" class="setup-link">→ Calendar API を開く</a><br>
+              ② 同じく左上のプロジェクト名を確認<br>
+              ③ 「Google Calendar API」の<strong>青い「有効にする」ボタン</strong>をクリック<br>
+              ④ 有効化完了のメッセージが出たらOK
+            </p>
+
+            <p class="setup-step-meta"><strong>💡 困ったら</strong></p>
+            <p class="setup-step-desc">
+              ・<strong>「有効にする」ボタンが見つからない</strong>→もうすでに有効化済みかも（「管理」ボタンに変わってる）<br>
+              ・<strong>プロジェクトが違う</strong>→左上のプロジェクト名プルダウンでSTEP1のプロジェクトに切り替え<br>
+              ・<strong>API名が違う</strong>→「Google Sheets API」「Google Calendar API」と書いてあるか念のため確認
+            </p>
+          </div>
+        </div>
+
+        <!-- ============= STEP 3 ============= -->
+        <div class="setup-step-inline">
+          <div class="setup-step-num">3</div>
+          <div class="setup-step-body">
+            <div class="setup-step-title">この拡張機能の「アイテムID」をコピーする</div>
+
+            <p class="setup-step-meta"><strong>📌 これは何？</strong></p>
+            <p class="setup-step-desc">
+              アイテムID＝Chrome拡張機能ごとに割り振られた<strong>32文字の英字</strong>のことです。<br>
+              例：<code>abcdefghijklmnopqrstuvwxyzabcdef</code><br>
+              （マイナンバーや住所みたいに、その拡張機能を一意に識別するためのIDです）
+            </p>
+
+            <p class="setup-step-meta"><strong>🎯 なぜ必要？</strong></p>
+            <p class="setup-step-desc">
+              次のSTEP 4で「鍵（OAuthクライアントID）」を作るのですが、<br>
+              Googleに「<strong>この鍵はどの拡張機能用ですか？</strong>」と聞かれます。そのとき<strong>アイテムIDで紐付け</strong>しないと、認証時にエラーになります。
+            </p>
+
+            <p class="setup-step-meta"><strong>✏️ 手順</strong></p>
+            <p class="setup-step-desc">
+              ① Chromeのアドレスバーに <code>chrome://extensions/</code> をコピペして開く<br>
+              ② 開いたページの<strong>右上にある「デベロッパーモード」というトグル</strong>を<strong>ON</strong>にする<br>
+              　（これがOFFだとIDが表示されません）<br>
+              ③ 「Time!Time!」のカードを探す<br>
+              ④ カードの中に「<strong>ID: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</strong>」と書かれている32文字をマウスで選択<br>
+              ⑤ <strong>Cmd+C（Mac）/ Ctrl+C（Win）</strong> でコピー<br>
+              ⑥ メモ帳・Sticky Notes・iPhoneのメモなどに<strong>一旦貼り付けておく</strong>（STEP 4で使うので）
+            </p>
+
+            <p class="setup-step-meta"><strong>💡 困ったら</strong></p>
+            <p class="setup-step-desc">
+              ・<strong>IDが見つからない</strong>→「デベロッパーモード」がONになっているか再確認<br>
+              ・<strong>「Time!Time!」が見つからない</strong>→拡張機能を有効化していますか？（カード左下のトグル）<br>
+              ・<strong>IDが32文字より短い</strong>→コピーミス、もう一度全選択<br>
+              ・<strong>IDが変わってしまった！</strong>→開発中の拡張は再読み込みでIDが変わることがあります。その場合はSTEP 4 でクライアントIDを作り直すか、ID欄を更新
+            </p>
+          </div>
+        </div>
+
+        <!-- ============= STEP 4 ============= -->
+        <div class="setup-step-inline">
+          <div class="setup-step-num">4</div>
+          <div class="setup-step-body">
+            <div class="setup-step-title">OAuthクライアントID（鍵）を発行する
+              <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="setup-link">→ 開く</a>
+            </div>
+
+            <p class="setup-step-meta"><strong>📌 これは何？</strong></p>
+            <p class="setup-step-desc">
+              OAuthクライアントID＝<strong>「Time!Time!があなたのGoogleアカウントにアクセスしていいよ」という許可証</strong>のようなものです。<br>
+              形式：<code>123456789-abcdef.apps.googleusercontent.com</code><br>
+              （長いですが、ただの文字列なのでコピペすればOK）
+            </p>
+
+            <p class="setup-step-meta"><strong>🎯 なぜ必要？</strong></p>
+            <p class="setup-step-desc">
+              この鍵を manifest.json に書いておくことで、Time!Time!が<strong>あなたのSheetsやCalendarにアクセスできる</strong>ようになります。<br>
+              鍵がないと、Googleは「あなた誰？」となってアクセスを拒否します。
+            </p>
+
+            <p class="setup-step-meta"><strong>✏️ 手順</strong></p>
+            <p class="setup-step-desc">
+              ① 上の「→ 開く」リンクから「APIとサービス」→「認証情報」を開く<br>
+              ② 左上のプロジェクト名がSTEP 1のものか確認<br>
+              ③ 画面上部の「<strong>+ 認証情報を作成</strong>」ボタンをクリック<br>
+              ④ 出てきたメニューから「<strong>OAuth クライアント ID</strong>」を選択<br>
+              ⑤ ★ もし「<strong>同意画面を構成</strong>」と出たら（はじめての方）→ <strong>下の「同意画面の作り方」を先にやってから戻ってください</strong><br>
+              ⑥ 「アプリケーションの種類」プルダウンから「<strong>Chrome 拡張機能</strong>」を選択<br>
+              ⑦ 名前：何でもOK（例：<code>Time!Time! クライアント 1</code>）<br>
+              ⑧ 「<strong>アイテムID</strong>」欄に、<strong>STEP 3 でコピーした32文字</strong>を貼り付け<br>
+              ⑨ 一番下の「<strong>作成</strong>」ボタンをクリック<br>
+              ⑩ 「OAuth クライアントを作成しました」というダイアログが出る<br>
+              ⑪ <strong>「クライアント ID」と表示されている長い文字列</strong>（〇〇〇.apps.googleusercontent.com）の右のコピーアイコンをクリック<br>
+              ⑫ メモ帳などに貼り付けておく（STEP 5で使う）
+            </p>
+
+            <p class="setup-step-meta"><strong>🔧 同意画面の作り方（はじめての方のみ）</strong></p>
+            <p class="setup-step-desc">
+              「同意画面を構成」ボタンが出たら、次の流れでサクッと作れます：<br>
+              ① <strong>User Type: 外部</strong>を選択 → 「作成」<br>
+              ② アプリ名：何でもOK（例：<code>Time!Time!</code>）<br>
+              ③ ユーザーサポートメール：あなたのGmailアドレスを選択<br>
+              ④ 開発者の連絡先：同じくあなたのGmailアドレス<br>
+              ⑤ 「保存して次へ」を押してスコープ画面へ（スコープ追加はスキップでOK）<br>
+              ⑥ <strong>テストユーザー画面で必ず「+ ADD USERS」をクリック</strong>し、<strong>あなた自身のGmailアドレスを追加</strong>（重要！）<br>
+              　→ これを忘れると STEP 6 で「<strong>アクセスをブロック</strong>」エラーが出ます<br>
+              ⑦ 「保存して次へ」を押して完了 → STEP 4の④に戻る
+            </p>
+
+            <p class="setup-step-meta" style="background:#FFF1E8;padding:8px 10px;border-radius:6px;margin-top:8px"><strong>⚠️ よく出るエラー：「アクセスをブロック」</strong></p>
+            <p class="setup-step-desc">
+              認可時に「<strong>Time!Time! は Google の審査プロセスを完了していません</strong>」と出る場合は、テストユーザー登録が抜けています。<br>
+              ① <a href="https://console.cloud.google.com/apis/credentials/consent" target="_blank" class="setup-link">→ OAuth同意画面を開く</a><br>
+              ② 「テストユーザー」セクションまでスクロール<br>
+              ③ 「<strong>+ ADD USERS</strong>」または「<strong>+ ユーザーを追加</strong>」をクリック<br>
+              ④ あなたのGmailアドレスを入力 → 保存<br>
+              ⑤ Time!Time!でもう一度認可を試す
+            </p>
+
+            <p class="setup-step-meta"><strong>💡 困ったら</strong></p>
+            <p class="setup-step-desc">
+              ・<strong>「アイテムIDが無効です」と出る</strong>→32文字ちょうど？余計な空白が入っていないか確認<br>
+              ・<strong>「アクセスがブロックされました」と出る</strong>→同意画面の作成がまだ。「同意画面の作り方」をやり直し<br>
+              ・<strong>クライアントIDのダイアログを閉じてしまった</strong>→認証情報一覧に戻り、作ったクライアントIDを再度開ける<br>
+              ・<strong>テストユーザーの追加が必要？</strong>→自分のGmailアドレスをテストユーザーに登録しておくと安心
+            </p>
+          </div>
+        </div>
+
+        <!-- ============= STEP 5 ============= -->
+        <div class="setup-step-inline">
+          <div class="setup-step-num">5</div>
+          <div class="setup-step-body">
+            <div class="setup-step-title">manifest.json にクライアントIDを貼り付ける</div>
+
+            <p class="setup-step-meta"><strong>📌 これは何？</strong></p>
+            <p class="setup-step-desc">
+              <code>manifest.json</code> は、Chrome拡張機能の<strong>設計書</strong>のようなファイル。<br>
+              「何のAPIを使うか」「どんな権限が必要か」「どの鍵を使うか」が書いてあります。<br>
+              ここに<strong>あなた専用のクライアントID</strong>を書き込みます。
+            </p>
+
+            <p class="setup-step-meta"><strong>🎯 なぜ必要？</strong></p>
+            <p class="setup-step-desc">
+              <code>manifest.json</code> の <code>oauth2.client_id</code> に、STEP 4 で作った<strong>あなた専用のID</strong>が入っている必要があります。<br>
+              もし <code>"YOUR_CLIENT_ID..."</code> のような仮の値になっていたら、認証は動かないのでここで置き換えます。
+            </p>
+
+            <p class="setup-step-meta"><strong>✏️ 手順（フォルダの場所が分からない人もこれで大丈夫）</strong></p>
+            <p class="setup-step-desc">
+              <strong>《拡張機能フォルダを開く》</strong><br>
+              ① 上の「<strong>📁 拡張機能フォルダを確認</strong>」ボタンをクリック<br>
+              　（または Chrome のアドレスバーに <code>chrome://extensions/</code> をコピペ）<br>
+              ② 開いたページの<strong>右上「デベロッパーモード」がON</strong>になっていることを確認（OFFなら ON にする）<br>
+              ③ 「Time!Time!」のカードを探す<br>
+              ④ カード内の<strong>「読み込み元: /Users/...」というファイルパス</strong>を探す<br>
+              ⑤ そのパスを<strong>クリック</strong>すると、<strong>Finderで拡張機能フォルダが開きます🌷</strong><br>
+              　（Win の場合はエクスプローラーで開く）
+            </p>
+
+            <p class="setup-step-desc" style="margin-top:8px">
+              <strong>《manifest.json を開く》</strong><br>
+              ⑥ Finder のフォルダ内に並んでいるファイルから <code>manifest.json</code> を探す<br>
+              ⑦ <code>manifest.json</code> を<strong>右クリック</strong>→「<strong>このアプリケーションで開く</strong>」<br>
+              ⑧ 「<strong>テキストエディット</strong>」を選んでクリック（Macの場合）<br>
+              　（VSCodeを持っていればVSCodeでもOK。メモ帳でも開けます）
+            </p>
+
+            <p class="setup-step-desc" style="margin-top:8px">
+              <strong>《client_id を書き換える》</strong><br>
+              ⑨ テキストエディタの上のメニューから<strong>「編集」→「検索」</strong>（または Cmd+F）<br>
+              ⑩ 検索ボックスに <code>client_id</code> と入力<br>
+              ⑪ <code>"client_id": "..."</code> という行が見つかる<br>
+              ⑫ ダブルクォートの<strong>中身だけ</strong>を選択<br>
+              ⑬ STEP 4 でコピーしたあなたのIDで<strong>上書き</strong>（例：<code>248204274658-xxxxx...apps.googleusercontent.com</code>）<br>
+              ⑭ Cmd+S（Mac）/ Ctrl+S（Win）で<strong>保存</strong>
+            </p>
+
+            <p class="setup-step-meta" style="margin-top:10px"><strong>📝 完成イメージ</strong></p>
+            <div class="code-block" style="font-size:11px">"oauth2": {<br>&nbsp;&nbsp;"client_id": "あなたのクライアントID.apps.googleusercontent.com",<br>&nbsp;&nbsp;"scopes": [...]<br>}</div>
+            <p class="setup-step-desc" style="margin-top:4px; color:rgba(var(--text-rgb),0.55); font-size:11px">
+              ※ 上は例。あなたの実際のIDに置き換えてください。
+            </p>
+
+            <p class="setup-step-meta"><strong>💡 困ったら</strong></p>
+            <p class="setup-step-desc">
+              ・<strong>「読み込み元」が表示されない</strong>→デベロッパーモードがONか再確認（右上のトグル）<br>
+              ・<strong>パスをクリックしてもFinderが開かない</strong>→パス全体を選択してコピー→Finderの「移動」→「フォルダへ移動」で貼り付け<br>
+              ・<strong>manifest.json が見つからない</strong>→フォルダの直下にあります。サブフォルダではない<br>
+              ・<strong>右クリックメニューに「テキストエディット」がない</strong>→「その他」→「アプリケーション」フォルダから選択<br>
+              ・<strong>保存できない・エラー</strong>→「"」「,」「{」「}」を消してないか確認。<strong>緑のシール</strong>マークが付いた読み取り専用なら、ファイル情報で「読み出しと書き込み」に変更<br>
+              ・<strong>JSONの形式がおかしい</strong>→ChatGPTに「このmanifest.jsonの client_id を 〇〇〇 に変えて」と頼んで全文をもらうのも◎
+            </p>
+          </div>
+        </div>
+
+        <!-- ============= STEP 6 ============= -->
+        <div class="setup-step-inline">
+          <div class="setup-step-num">6</div>
+          <div class="setup-step-body">
+            <div class="setup-step-title">拡張機能をリロードして完了🌷</div>
+
+            <p class="setup-step-meta"><strong>📌 これは何？</strong></p>
+            <p class="setup-step-desc">
+              manifest.json を変更したので、Chromeに「<strong>変更を反映してね</strong>」と伝える作業です。<br>
+              （ChromeはmanifestをキャッシュしているのでリロードしないとIDが反映されない）
+            </p>
+
+            <p class="setup-step-meta"><strong>✏️ 手順</strong></p>
+            <p class="setup-step-desc">
+              ① <code>chrome://extensions/</code> を開く<br>
+              ② Time!Time! のカードを探す<br>
+              ③ カード右下にある<strong>「↻ 更新（リロード）」アイコン</strong>をクリック<br>
+              ④ アイテムIDが<strong>STEP 3 でコピーしたものと同じ</strong>か念のため確認<br>
+              　（違っていたら STEP 4 のクライアントIDの「アイテムID」欄を更新する必要あり）<br>
+              ⑤ Time!Time!の設定画面で<strong>「カレンダー連携 ON」</strong>などのトグルをONにする<br>
+              ⑥ 一度「終了」ボタンや「📅空き時間」ボタンを押すと、<strong>Googleの認可ダイアログ</strong>が出る<br>
+              ⑦ あなたのGoogleアカウントを選択 →「許可」を押せば<strong>完了！🌸</strong>
+            </p>
+
+            <p class="setup-step-meta"><strong>💡 困ったら</strong></p>
+            <p class="setup-step-desc">
+              ・<strong>「このアプリは確認されていません」と警告</strong>→「詳細」→「Time!Time!（安全ではないページ）に移動」をクリック<br>
+              　（自分で作った拡張なので問題なし）<br>
+              ・<strong>認可ダイアログが出ない</strong>→拡張をリロードした？manifestの保存ができてる？<br>
+              ・<strong>カレンダーに予定が投入されない</strong>→設定画面の「カレンダー連携」がONになっているか確認<br>
+              ・<strong>もう一度ダイアログを出したい</strong>→Googleアカウント設定の「セキュリティ」→「サードパーティのアプリ」からTime!Time!の許可を取り消し、再認可
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="field-group" style="margin-top:16px; padding:14px 16px; background:rgba(var(--accent-rgb),0.08); border-radius:var(--radius-md)">
+        <p class="field-hint" style="margin:0; color:var(--text); line-height:1.7">
+          <strong>🎯 全体まとめ｜何をしているか</strong><br>
+          ① Googleに「Time!Time!という拡張機能を使うよ」と申請する場所＝<strong>プロジェクト</strong>を作る（STEP 1）<br>
+          ② 使うサービス（Sheets / Calendar）の<strong>窓口</strong>を開ける（STEP 2）<br>
+          ③ あなたのTime!Time!を識別する<strong>身分証</strong>＝アイテムIDを取得（STEP 3）<br>
+          ④ 身分証を見せて<strong>鍵</strong>＝クライアントIDを発行してもらう（STEP 4）<br>
+          ⑤ その鍵を<strong>Time!Time!に渡す</strong>（STEP 5）<br>
+          ⑥ <strong>動作確認＆完了</strong>（STEP 6）
+        </p>
+      </div>
+      </details>
+    </section>
+
+    <!-- ── Section: Calendar ── -->
+    <section class="card" id="sec-calendar">
+      <h2 class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Googleカレンダー連携
+      </h2>
+      <div class="field-group">
+        <label class="toggle-row">
+          <span>終了時にカレンダーへ自動投入する</span>
+          <input type="checkbox" id="calendarEnabled" class="toggle-input">
+          <span class="toggle-thumb"></span>
+        </label>
+        <p class="field-hint" style="margin-top:6px">「終了」を押した瞬間に、その時間帯の予定をGoogleカレンダーへ自動作成します🌷</p>
+        <p class="field-hint" style="margin-top:4px">セットアップがまだの方は、ページ上部の「🚀 Google連携セットアップ手順」をご覧ください（STEP 2-2 で Calendar API を有効化）。</p>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="calendarId">投入先カレンダー</label>
+        <div class="number-row" style="gap:8px">
+          <select class="text-input" id="calendarId" style="flex:1">
+            <option value="primary">メインカレンダー（primary）</option>
+          </select>
+          <button class="btn-secondary" id="loadCalendarsBtn" type="button">一覧を取得</button>
+        </div>
+        <p class="field-hint">「一覧を取得」を押すと、書き込み権限のあるカレンダーが選べます。</p>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="calendarTitleTemplate">予定タイトルのテンプレート</label>
+        <input class="text-input" type="text" id="calendarTitleTemplate" placeholder="⏱ {client}｜{note}">
+        <p class="field-hint">使えるトークン：<code>{client}</code>（クライアント名）<code>{note}</code>（メモ）<code>{tags}</code>（タグ）</p>
+      </div>
+      <div class="field-group">
+        <label class="toggle-row">
+          <span>クライアントのカラーに合わせて自動色分け</span>
+          <input type="checkbox" id="calendarAutoColor" class="toggle-input">
+          <span class="toggle-thumb"></span>
+        </label>
+        <p class="field-hint" style="margin-top:6px">Googleカレンダーの11色から、最も近い色を自動で選びます。</p>
+      </div>
+
+      <div class="field-group" style="border-top:1px solid rgba(var(--accent-rgb),0.15); padding-top:14px; margin-top:14px">
+        <p class="field-label">空き時間ワンクリック（ヘッダー📅ボタン）</p>
+        <p class="field-hint" style="margin-bottom:10px">「空き時間」ボタンを押したときに見せる時間帯の条件を設定します。</p>
+        <div class="two-col">
+          <div class="field-group">
+            <label class="field-label" for="freetimeStartHour">営業開始時刻（時）</label>
+            <input class="text-input number-input" type="number" id="freetimeStartHour" min="0" max="23" value="10">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="freetimeEndHour">営業終了時刻（時）</label>
+            <input class="text-input number-input" type="number" id="freetimeEndHour" min="1" max="24" value="18">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field-group">
+            <label class="field-label" for="freetimeMinSlot">最小空き時間（分）</label>
+            <input class="text-input number-input" type="number" id="freetimeMinSlot" min="5" max="240" value="30">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="freetimeDaysAhead">何日先まで（日）</label>
+            <input class="text-input number-input" type="number" id="freetimeDaysAhead" min="1" max="30" value="7">
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="toggle-row">
+            <span>平日のみ表示</span>
+            <input type="checkbox" id="freetimeWeekdaysOnly" class="toggle-input">
+            <span class="toggle-thumb"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Section: Sheets ── -->
+    <section class="card" id="sec-sheets">
+      <h2 class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/>
+          <line x1="9" y1="3" x2="9" y2="21"/>
+        </svg>
+        Googleスプレッドシート
+      </h2>
+      <div class="field-group">
+        <label class="field-label" for="spreadsheetId">スプレッドシートID</label>
+        <input class="text-input" type="text" id="spreadsheetId" placeholder="URLの /d/[ここ]/ の部分を入力">
+        <p class="field-hint">スプレッドシートURL例：<br>https://docs.google.com/spreadsheets/d/<strong>〇〇〇</strong>/edit</p>
+      </div>
+      <div class="field-group">
+        <label class="toggle-row">
+          <span>ポップアップ終了時に自動同期</span>
+          <input type="checkbox" id="autoSync" class="toggle-input">
+          <span class="toggle-thumb"></span>
+        </label>
+      </div>
+      <p class="field-hint" style="margin-top:10px">セットアップが済んでいない方は、ページ上部の「🚀 Google連携セットアップ手順」をご覧ください。</p>
+      <div class="reauth-row">
+        <button class="btn-secondary" id="reauthSheetsBtn">🔄 Google 再認証</button>
+        <button class="btn-secondary" id="fullResyncBtn">⚠️ 今月を上書き同期</button>
+      </div>
+      <p class="field-hint" style="margin-top:6px">「再認証」→ 同期エラーが出たとき。「上書き同期」→ シートの内容をローカルデータで完全に上書きしたいときのみ使用。</p>
+    </section>
+
+    <!-- ── Section: データ ── -->
+    <section class="card" id="sec-data">
+      <h2 class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <ellipse cx="12" cy="5" rx="9" ry="3"/>
+          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+        </svg>
+        データ管理
+      </h2>
+      <div class="data-info">
+
+        <p class="data-section-label">保存場所と上限</p>
+        <table class="data-info-table">
+          <thead>
+            <tr>
+              <th>データの種類</th>
+              <th>保存先</th>
+              <th>上限</th>
+              <th>他デバイスと同期</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>設定・クライアント情報</td>
+              <td><span class="data-badge sync">chrome.storage.sync</span></td>
+              <td>100 KB（全体）</td>
+              <td><span class="data-badge ok">✓ される</span></td>
+            </tr>
+            <tr>
+              <td>稼働記録（タイムエントリ）</td>
+              <td><span class="data-badge local">chrome.storage.local</span></td>
+              <td>5 MB</td>
+              <td><span class="data-badge ng">✗ されない</span></td>
+            </tr>
+            <tr>
+              <td>タイマー・ポモドーロ状態</td>
+              <td><span class="data-badge local">chrome.storage.local</span></td>
+              <td>5 MB（共有）</td>
+              <td><span class="data-badge ng">✗ されない</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="data-section-label">⚠️ データが消える条件</p>
+        <ul class="data-warn-list">
+          <li><span class="warn-icon">🗑</span><span><strong>拡張機能をアンインストール</strong>すると、稼働記録（local）は完全に削除されます。再インストールしても復元できません。</span></li>
+          <li><span class="warn-icon">👤</span><span><strong>Chromeプロファイルを削除</strong>すると、sync・local 両方のデータが失われます。</span></li>
+          <li><span class="warn-icon">🧹</span><span>Chromeの「閲覧データを削除」で<strong>「サイトデータ」を含めると</strong>、拡張機能のデータも消える場合があります。</span></li>
+          <li><span class="warn-icon">⬇️</span><span>下の「データを全削除」ボタンは<strong>稼働記録のみ</strong>を削除します（設定・クライアント情報は残ります）。</span></li>
+        </ul>
+
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" id="exportBtn">CSVエクスポート</button>
+        <button class="btn-secondary" id="exportJsonBtn">JSONエクスポート</button>
+        <button class="btn-secondary" id="invoiceBtn">請求書を作成</button>
+        <button class="btn-danger" id="clearDataBtn">データを全削除</button>
+      </div>
+    </section>
+
+    <!-- ── Section: 使い方ガイド ── -->
+    <section class="card" id="sec-guide">
+      <h2 class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+        使い方ガイド
+      </h2>
+
+      <!-- 01 タイマー基本操作 -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">01</div>
+          <span class="guide-title">タイマーの基本操作</span>
+          <span class="guide-lead">クライアントを選んで「開始」を押すだけ</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text"><strong>クライアントをタップ</strong>して選択（ハイライト表示になります）</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text"><strong>「開始」ボタン</strong>を押すとタイマーがスタート。バッジにも経過時間が表示されます</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text">休憩したいときは<strong>「休憩」</strong>を押すだけ。休憩時間は稼働時間から自動で除外されます</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">4</div><div class="guide-step-text"><strong>「終了」</strong>を押すとその場で記録が保存。メモを追加することもできます（任意）</div></div>
+          </div>
+          <div class="guide-tip"><div class="guide-tip-icon">💡</div>別のクライアントに切り替えたいときは、一度「終了」してから新しいクライアントを選んで「開始」します。</div>
+        </div>
+      </details>
+
+      <!-- 02 クライアント管理 -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">02</div>
+          <span class="guide-title">クライアント管理</span>
+          <span class="guide-lead">色・時給・月の目標時間をクライアントごとに設定</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text">拡張機能の<strong>⚙️ 設定</strong>を開く</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text">「クライアントを追加」から<strong>名前・カラー</strong>を設定</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text"><strong>時給</strong>を設定すると「今月の収益」がポップアップに表示されます</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">4</div><div class="guide-step-text"><strong>月の目標時間</strong>を設定するとゴールバーが表示され、達成時に通知が届きます</div></div>
+          </div>
+          <div class="guide-tip"><div class="guide-tip-icon">🎨</div>カラーは Sheets に同期したときの行の色にも使われます。クライアントごとに見分けやすい色を選ぶのがおすすめです。</div>
+        </div>
+      </details>
+
+      <!-- 03 タグ -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">03</div>
+          <span class="guide-title">タグで作業を分類</span>
+          <span class="guide-lead">「ミーティング」「デザイン」など作業種別をタグで記録</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text">設定 → クライアント → <strong>「タグを追加」</strong>から名前を入力</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text">タイマー起動中にタグをタップすると<strong>ハイライト</strong>（複数選択可）</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text">記録したタグは<strong>Sheets に書き出し</strong>たときに「タグ」列に表示されます</div></div>
+          </div>
+          <div class="guide-tip"><div class="guide-tip-icon">💡</div>タグはクライアントごとに独立しています。「ハルカ企画のデザイン」と「ことり堂のデザイン」は別々に管理されます。</div>
+        </div>
+      </details>
+
+      <!-- 04 メモ -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">04</div>
+          <span class="guide-title">終了後にメモを追加</span>
+          <span class="guide-lead">「終了」直後の8秒間だけメモバーが表示されます</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text"><strong>「終了」を押した瞬間</strong>に稼働記録が保存されます</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text">画面上部にメモバーが表示（<strong>8秒間</strong>）。入力して「追加する」で記録に紐付け</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text">メモ不要なときは<strong>「スキップ」</strong>か Esc キーで閉じる</div></div>
+          </div>
+          <div class="guide-tip"><div class="guide-tip-icon">📝</div>メモは Sheets の「メモ」列に書き出されます。作業内容の詳細を残しておくと請求書作成時に役立ちます。</div>
+        </div>
+      </details>
+
+      <!-- 05 ポモドーロ -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">05</div>
+          <span class="guide-title">ポモドーロタイマー</span>
+          <span class="guide-lead">25分作業 → 5分休憩を自動サイクル、チャイム通知付き🍀</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text">設定 → <strong>ポモドーロ</strong> から ON にする</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text">タイマー起動中に画面上部の<strong>進捗バー</strong>で残り時間を確認</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text">25分経過すると<strong>通知「○○分経過しました🍀」</strong>＋チャイム音が鳴ります</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">4</div><div class="guide-step-text">休憩が終わると<strong>「休憩終了です🌿」</strong>の通知で再開をお知らせ</div></div>
+          </div>
+          <div class="guide-tip"><div class="guide-tip-icon">⏱</div>ポモドーロをONにしても、通常の稼働タイマーは普通に動き続けます。ポモドーロはあくまで「お知らせ機能」です。</div>
+        </div>
+      </details>
+
+      <!-- 06 テーマ -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">06</div>
+          <span class="guide-title">54種のカラーテーマ</span>
+          <span class="guide-lead">プリセット54種＋カスタムカラーで自分色にカスタマイズ</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text">設定 → <strong>カラーテーマ</strong> を開く</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text">54種類のプリセットから<strong>クリックで即適用</strong></div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text">さらに<strong>カスタムカラー</strong>でアクセント・ベース・テキスト色を自由に設定</div></div>
+          </div>
+          <div class="guide-tip"><div class="guide-tip-icon">🎨</div>テーマはポップアップ・設定・レポート・請求書のすべてに適用されます。お気に入りの色で作業しましょう。</div>
+        </div>
+      </details>
+
+      <!-- 07 Google Sheets -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">07</div>
+          <span class="guide-title">Google Sheets に書き出し</span>
+          <span class="guide-lead">📊ボタンで当月の稼働記録をスプレッドシートへ自動書き出し</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text">設定 → <strong>Sheets</strong> にスプレッドシート ID を入力</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text">ポップアップの<strong>📊 ボタン</strong>を押すと当月のデータを書き出し</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text">「2026-05」のような月別シートタブが<strong>自動作成</strong>されます</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">4</div><div class="guide-step-text">クライアントの色で<strong>行がカラーリング</strong>され見やすく整形</div></div>
+          </div>
+          <div class="guide-tip"><div class="guide-tip-icon">⚠️</div>初回は Google の認証画面が開いてポップアップが閉じることがあります。認証完了後にもう一度📊を押してください。エラーが出た場合は「Sheets」設定内の「🔄 Google 再認証」を試してください。</div>
+        </div>
+      </details>
+
+      <!-- 08 Google Calendar -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">08</div>
+          <span class="guide-title">Google Calendar に自動投入</span>
+          <span class="guide-lead">「終了」するたびに稼働時間がカレンダーに自動登録</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text">設定 → <strong>Calendar 連携</strong> を ON にする</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text">タイマーを「終了」すると<strong>自動でカレンダーに予定が作成</strong>されます</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text">タイトルは<code>{client}</code>・<code>{note}</code>で自由にカスタマイズ可能</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">4</div><div class="guide-step-text"><strong>自動色分け ON</strong> にするとクライアントカラーに近いカレンダー色が自動適用</div></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 09 空き時間検索 -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">09</div>
+          <span class="guide-title">カレンダーから空き時間を検索</span>
+          <span class="guide-lead">今後7日間の空き枠を自動一覧化、コピーしてすぐ送れる</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text">ポップアップ上部の<strong>📅 カレンダーアイコン</strong>をクリック</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text">「空き時間を見る」を押すと今後 <strong>7日分の空き枠</strong>が一覧表示</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text"><strong>📋 コピー</strong>でテキスト形式にコピー → メール・チャットに貼り付け可能</div></div>
+          </div>
+          <div class="guide-tip"><div class="guide-tip-icon">⚙️</div>設定 → 空き時間 で「稼働時間帯（10〜18時など）」「最低スロット時間」「何日先まで見るか」をカスタマイズできます。</div>
+        </div>
+      </details>
+
+      <!-- 10 請求書 -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">10</div>
+          <span class="guide-title">請求書を発行</span>
+          <span class="guide-lead">稼働データからワンクリックで請求書を生成・PDF保存</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text">ポップアップの<strong>📈 レポートボタン</strong> → レポート画面から「請求書」を開く</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text"><strong>クライアント・月</strong>を選ぶと稼働データが自動集計</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text">税率・支払期限・備考などを調整して<strong>ブラウザの印刷 → PDF保存</strong></div></div>
+          </div>
+          <div class="guide-tip"><div class="guide-tip-icon">💡</div>時給を設定してあれば金額も自動計算されます。設定 → 「お名前」に自分の名前を入れておくと請求書に自動で入ります。</div>
+        </div>
+      </details>
+
+      <!-- 11 レポート -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">11</div>
+          <span class="guide-title">月次レポートを確認</span>
+          <span class="guide-lead">クライアント別稼働時間・収益をグラフと数字で確認</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text">ポップアップの<strong>📈 ボタン</strong>でレポート画面を開く</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text">月を選ぶと<strong>クライアント別の稼働時間・収益</strong>が一覧表示</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text"><strong>CSV / JSON</strong> でエクスポートして Excel・スプレッドシートで加工可能</div></div>
+          </div>
+          <div class="guide-tip"><div class="guide-tip-icon">📊</div>毎週月曜の朝9時に「先週の稼働合計」を通知でお知らせする週次レポート機能もあります。</div>
+        </div>
+      </details>
+
+      <!-- 12 Slack・離席検知 -->
+      <details class="guide-details">
+        <summary class="guide-summary">
+          <div class="guide-num">12</div>
+          <span class="guide-title">Slack 連携・離席検知</span>
+          <span class="guide-lead">稼働状況を Slack に自動反映、長時間離席を通知</span>
+        </summary>
+        <div class="guide-content">
+          <div class="guide-step-list">
+            <div class="guide-step-item"><div class="guide-step-num">1</div><div class="guide-step-text">Slack の<strong>User Token（xoxp-...）</strong>を設定に入力</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">2</div><div class="guide-step-text">稼働開始 → <strong>「:computer: 稼働中」</strong>、休憩 → <strong>「:coffee: 休憩中」</strong>に自動更新</div></div>
+            <div class="guide-step-item"><div class="guide-step-num">3</div><div class="guide-step-text"><strong>離席検知 ON</strong>：PC を10分間操作しないとタイマーが動いていても通知が届きます</div></div>
+            <div class="guide-step-item"><div class="guide-step-num pink">4</div><div class="guide-step-text">通知のボタンから<strong>「休憩に切り替える」「そのまま続ける」</strong>を選択できます</div></div>
+          </div>
+          <div class="guide-tip"><div class="guide-tip-icon">🔑</div>Slack Token の取得は api.slack.com → Your Apps → OAuth & Permissions → <code>users.profile:write</code> スコープが必要です。</div>
+        </div>
+      </details>
+
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <button class="btn-primary" id="saveBtn">設定を保存</button>
+  </footer>
+</div>
+
+<!-- Client Edit Modal -->
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal">
+    <h3 class="modal-title" id="modalTitle">クライアント追加</h3>
+    <div class="field-group">
+      <label class="field-label">クライアント名</label>
+      <input class="text-input" type="text" id="clientNameInput" placeholder="例：さくら工房">
+    </div>
+    <div class="field-group">
+      <label class="field-label">カラー</label>
+      <div class="color-picker-wrap">
+        <input type="color" id="clientColorInput" value="#A6B5A5">
+      </div>
+      <div class="color-swatches" id="colorSwatches"></div>
+    </div>
+    <div class="two-col">
+      <div class="field-group">
+        <label class="field-label" for="clientHourlyRate">時給（円）</label>
+        <input class="text-input number-input" type="number" id="clientHourlyRate" min="0" placeholder="0">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="clientGoalHours">月間目標（時間）</label>
+        <input class="text-input number-input" type="number" id="clientGoalHours" min="0" placeholder="0">
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">作業タグ</label>
+      <p class="field-hint" style="margin-bottom:8px">このクライアントでの稼働記録に使うタグ</p>
+      <div class="tag-editor" id="modalTagEditor"></div>
+      <div class="tag-add-row">
+        <input class="text-input" type="text" id="modalNewTagInput" placeholder="新しいタグ名（例：レビュー）" maxlength="20">
+        <button class="btn-add" id="modalAddTagBtn">追加</button>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">タスクリスト</label>
+      <p class="field-hint" style="margin-bottom:8px">クリックするとそのタスク名でTime!Time!が自動スタートします（popup側で✓を付けると完了扱い）</p>
+      <div class="tag-editor" id="modalTaskEditor"></div>
+      <div class="tag-add-row">
+        <input class="text-input" type="text" id="modalNewTaskInput" placeholder="新しいタスク（例：議事録まとめ）" maxlength="60">
+        <button class="btn-add" id="modalAddTaskBtn">追加</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="modalCancelBtn">キャンセル</button>
+      <button class="btn-primary" id="modalSaveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="lib/utils.js"></script>
+<script src="lib/storage.js"></script>
+<script src="lib/themes.js"></script>
+<script src="lib/sheets.js"></script>
+<script src="lib/calendar.js"></script>
+<script src="settings.js"></script>
+</body>
+</html>

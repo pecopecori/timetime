@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Time!Time! — 請求書</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="invoice.css">
+</head>
+<body>
+
+<!-- Screen UI (hidden on print) -->
+<div class="screen-ui">
+  <div class="ui-bar">
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 15.5"/>
+      </svg>
+      <span>Time!Time! <em>請求書</em></span>
+    </div>
+    <div class="ui-actions">
+      <div class="field-row">
+        <label class="ui-label" for="clientSelect">クライアント</label>
+        <select class="ui-select" id="clientSelect"></select>
+      </div>
+      <div class="field-row">
+        <label class="ui-label" for="invoiceDate">請求日</label>
+        <input class="ui-input" type="date" id="invoiceDate">
+      </div>
+      <button class="btn-print" onclick="window.print()">印刷 / PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- Invoice (printed) -->
+<div class="invoice" id="invoice">
+  <div class="inv-header">
+    <div class="inv-title-block">
+      <div class="inv-label">請　求　書</div>
+      <div class="inv-num" id="invNum">No. 001</div>
+    </div>
+    <div class="inv-meta">
+      <div class="inv-date">請求日：<span id="invDate"></span></div>
+      <div class="inv-due">支払期限：<span id="invDue"></span></div>
+    </div>
+  </div>
+
+  <div class="inv-parties">
+    <div class="inv-to">
+      <div class="party-label">請求先</div>
+      <div class="party-name" id="invToName">—</div>
+    </div>
+    <div class="inv-from">
+      <div class="party-label">請求元</div>
+      <div class="party-name" id="invFromName">—</div>
+      <div class="party-detail" id="invFromDetail"></div>
+    </div>
+  </div>
+
+  <table class="inv-table">
+    <thead>
+      <tr>
+        <th class="col-desc">作業内容</th>
+        <th class="col-date">日付</th>
+        <th class="col-hours">時間</th>
+        <th class="col-rate">時給</th>
+        <th class="col-amt">金額</th>
+      </tr>
+    </thead>
+    <tbody id="invTableBody"></tbody>
+    <tfoot>
+      <tr class="subtotal-row">
+        <td colspan="3">小計</td>
+        <td></td>
+        <td class="amt" id="invSubtotal">¥0</td>
+      </tr>
+      <tr class="tax-row">
+        <td colspan="3">消費税（<span id="taxRateLabel">10</span>%）</td>
+        <td></td>
+        <td class="amt" id="invTax">¥0</td>
+      </tr>
+      <tr class="total-row">
+        <td colspan="3">合計</td>
+        <td></td>
+        <td class="amt total-amt" id="invTotal">¥0</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="inv-note" id="invNote"></div>
+
+  <div class="inv-footer">
+    <div class="inv-payment">
+      <div class="payment-title">お振込先</div>
+      <div class="payment-detail" id="paymentDetail">—</div>
+    </div>
+  </div>
+</div>
+
+<!-- Invoice settings panel (screen only) -->
+<div class="settings-panel screen-ui">
+  <div class="settings-inner">
+    <h3 class="settings-title">請求書の設定</h3>
+    <div class="settings-grid">
+      <div class="field-group">
+        <label class="ui-label">請求者名</label>
+        <input class="ui-input wide" type="text" id="fromName" placeholder="お名前を入力">
+      </div>
+      <div class="field-group">
+        <label class="ui-label">連絡先・住所など</label>
+        <textarea class="ui-textarea" id="fromDetail" rows="2" placeholder="メールアドレス、住所など"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="ui-label">振込先情報</label>
+        <textarea class="ui-textarea" id="payInfo" rows="2" placeholder="銀行名・口座番号など"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="ui-label">請求書番号</label>
+        <input class="ui-input" type="text" id="invNumber" value="001">
+      </div>
+      <div class="field-group">
+        <label class="ui-label">消費税率（%）</label>
+        <input class="ui-input" type="number" id="taxRate" value="10" min="0" max="99">
+      </div>
+      <div class="field-group">
+        <label class="ui-label">備考</label>
+        <textarea class="ui-textarea" id="noteText" rows="2" placeholder="お振込みの際は手数料をご負担ください など"></textarea>
+      </div>
+    </div>
+    <button class="btn-generate" id="generateBtn">プレビューを更新</button>
+  </div>
+</div>
+
+<script src="lib/utils.js"></script>
+<script src="lib/storage.js"></script>
+<script src="lib/themes.js"></script>
+<script src="invoice.js"></script>
+</body>
+</html>
